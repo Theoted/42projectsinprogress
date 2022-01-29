@@ -1,49 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   lst_functions2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/30 10:01:09 by tdeville          #+#    #+#             */
-/*   Updated: 2022/01/29 13:06:42 by tdeville         ###   ########lyon.fr   */
+/*   Created: 2022/01/29 11:39:29 by tdeville          #+#    #+#             */
+/*   Updated: 2022/01/29 13:11:39 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	free_all(char **str)
+void	ft_lstclear1(t_cmds **lst, void (*del)(void *))
 {
-	int	i;
+	t_cmds	*tmp;
 
-	i = 0;
-	while (str[i])
+	if (lst)
 	{
-		free(str[i]);
-		i++;
+		tmp = *lst;
+		while (tmp)
+		{
+			tmp = (*lst)->next;
+			ft_lstdelone1(*lst, (del));
+			*lst = tmp;
+		}
+		*lst = NULL;
 	}
+}
+
+void	ft_lstdelone1(t_cmds *lst, void (*del)(void *))
+{
+	if (lst)
+	{
+		del(lst->cmd);
+		free_all(lst->arg_vec_t);
+		free(lst);
+	}
+}
+
+void	del(char *str)
+{
 	free(str);
-}
-
-void	error(char *err, int n, t_pipex data)
-{
-	if (data.check == 1)
-		write(STDERR_FILENO, "Permission denied\n", 19);
-	if (err)
-	{
-		write(STDERR_FILENO, err, ft_strlen(err));
-		free(err);
-	}
-	exit(1);
-}
-
-int	double_arrlen(char **str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
 }
 

@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/01/11 10:18:51 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/01/29 14:11:46 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,47 +30,105 @@ char	*find_path(char **envp)
 	return (NULL);
 }
 
-char	*find_cmd(char **arg_vec, char **envp, t_pipex pipex)
+char	*find_cmd(char **arg_vec, char **envp, t_pipex *data)
 {
 	int		i;
+	char	*arg;
+	char	*join;
 
 	i = -1;
-	pipex.path = find_path(envp);
-	pipex.s_path = ft_split(pipex.path, ':');
-	free(pipex.path);
-	arg_vec[0] = ft_strjoin("/", arg_vec[0]);
-	while (pipex.s_path[++i])
+	data->path = find_path(envp);
+	data->s_path = ft_split(data->path, ':');
+	free(data->path);
+	arg = ft_strjoin("/", arg_vec[0]);
+	while (data->s_path[++i])
 	{
-		if (!access(ft_strjoin(pipex.s_path[i], arg_vec[0]), F_OK))
+		join = ft_strjoin(data->s_path[i], arg);
+		if (!access(join, F_OK))
 		{
-			if (!access(ft_strjoin(pipex.s_path[i], arg_vec[0]), R_OK))
-				return (ft_strjoin(pipex.s_path[i], arg_vec[0]));
+			if (!access(join, R_OK))
+			{
+				free(arg);
+				free_all(data->s_path);
+				return (join);
+			}
 			else
-				error("Permission denied\n");
+				data->check = 1;
 		}
+		free(join);
 	}
-	error(ft_strjoin(&arg_vec[0][1], " : command not found\n"));
+	free(arg);
+	free_all(data->s_path);
+	error(ft_strjoin(&arg_vec[0][0], " : command not found\n"), data->check, *data);
 	return (0);
 }
 
 int	main(int ac, char **av, char **envp)
 {
-	t_pipex	pipex;
-	int		pid;
-	int		pid1;
+	// t_pipex	pipex;
+	// int		pid;
+	// int		pid1;
+	// int		*pidd;
+	// int		i;
 
-	if (ac != 5)
+	// i = 0;
+	// // if (ac != 5)
+	// // {
+	// // 	error("Bad arguments\n");
+	// // 	return (1);
+	// // }
+	// pipex.fd = malloc(sizeof(int) * (ac - 3) * 2);
+	// pidd = malloc(sizeof(int) * (ac - 3));
+	// if (pipe(pipex.fd) == -1)
+	// 	exit(1);
+	// pid = fork();
+	// if (pid == 0)
+	// 	fork_child(pipex, av, envp);
+	// pid1 = fork();
+	// if (pid1 == 0)
+	// 	fork_parent(pipex, av, envp);
+	// // (void)ac;
+	// // (void)av;
+	// // (void)envp;
+
+	////////////////////////
+	int		i;
+	char	**args;
+	t_cmds	*cmds;
+	t_pipex	data;
+	
+	i = -1;
+	cmds = NULL;
+	data.pid = malloc(sizeof(int) * (ac - 3));
+	data.fd = malloc(sizeof(int *) * (ac - 3));
+	while (++i < (ac - 3))
+		data.fd[i] = malloc(sizeof(int) * 2);
+	i = 0;
+	while (i < (ac - 1))
 	{
-		error("Bad arguments\n");
-		return (1);
+		args = ft_split(av[i + 1], ' ');
+		ft_lstadd_back1(&cmds, ft_lstnew_double(find_cmd(args, envp, &data), args));
+		free_all(args);
+		i++;
 	}
-	if (pipe(pipex.fd) == -1)
-		exit(1);
-	pid = fork();
-	if (pid == 0)
-		fork_child(pipex, av, envp);
-	pid1 = fork();
-	if (pid1 == 0)
-		fork_parent(pipex, av, envp);
+	i = 0;
+	while (cmds->next)
+	{
+		pipe(data.fd[i]);
+		close(data.fd[i][0]);
+		data.pid[i] = fork();
+		if (!data.pid)
+		{
+			data.file1 = open(av[1], O_RDONLY, 0644);
+			dup2(data.pid[i], STDIN_FILENO);
+			dup2(data.fd[i][1], STDOUT_FILENO);
+			close(data.file1);
+			execve(cmds->cmd, cmds->arg_vec_t, envp);
+			return (0);
+		}
+		waitpid(data.pid[i], NULL, 0);
+		cmds = cmds->next;
+	}
+	ft_lstclear1(&cmds, (void *)del);
 	return (0);
 }
