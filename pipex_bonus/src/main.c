@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/01/29 15:19:38 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/11 09:58:20 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,21 @@ char	*find_cmd(char **arg_vec, char **envp, t_pipex *data)
 	return (0);
 }
 
+int	lst_size2(t_cmds *cmds)
+{
+	int	i;
+	t_cmds *tmp;
+
+	i = 0;
+	tmp = cmds;
+	while (tmp)
+	{
+		i++;
+		tmp = tmp->next;
+	}
+	return (i);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	// t_pipex	pipex;
@@ -93,16 +108,17 @@ int	main(int ac, char **av, char **envp)
 
 	////////////////////////
 	int		i;
+	int		j;
+	int		lstsize;
 	char	**args;
+	char	**test;
 	t_cmds	*cmds;
 	t_pipex	data;
-	
+	pid_t	pid;
+
 	i = -1;
 	cmds = NULL;
-	data.pid = malloc(sizeof(int) * (ac - 3));
-	data.fd = malloc(sizeof(int *) * (ac - 3));
-	while (++i < (ac - 3))
-		data.fd[i] = malloc(sizeof(int) * 2);
+	data.pid = malloc(sizeof(pid_t) * ((ac - 3) + 1));
 	i = 0;
 	while (i < (ac - 3))
 	{
@@ -111,34 +127,36 @@ int	main(int ac, char **av, char **envp)
 		free_all(args);
 		i++;
 	}
+	lstsize = lst_size2(cmds);
 	i = 0;
-	while (cmds)
+	data.file1 = open(av[1], O_RDONLY);
+	data.file2 = open(av[ac - 1], O_RDWR | O_CREAT, 0644);
+	if (data.file1 < 0 || data.file2 < 0)
+		printf("error file\n");
+	dup2(data.file1, STDIN_FILENO);
+	close(data.file1);
+	while (cmds->next)
 	{
-		pipe(data.fd[i]);
-		close(data.fd[i][0]);
-		data.pid[i] = fork();
-		if (!data.pid[i] && ((i + 1) != (ac - 3)))
+		pipe(data.fd);
+		pid = fork();
+		if (pid > 0)
 		{
-			data.file1 = open(av[1], O_RDONLY, 0644);
-			dup2(data.file1, STDIN_FILENO);
-			dup2(data.fd[i][1], STDOUT_FILENO);
-			close(data.file1);
-			execve(cmds->cmd, cmds->arg_vec_t, envp);
-			return (0);
+			close(data.fd[1]);
+			dup2(data.fd[0], STDIN_FILENO);
+			close(data.fd[0]);
+			waitpid(pid, NULL, 0);
 		}
-		if (!data.pid[i] && (i + 1) == (ac - 3))
+		else
 		{
-			data.file2 = open(av[ac - 1], O_RDWR | O_CREAT, 0644);
-			dup2(data.file2, STDOUT_FILENO);
-			dup2(data.fd[i][0], STDIN_FILENO);
-			close(data.file2);
-			execve(cmds->cmd, cmds->arg_vec_t, envp);
-			return (0);
+			close(data.fd[0]);
+			dup2(data.fd[1], STDOUT_FILENO);
+			close(data.fd[1]);
+			execve(data.cmds.cmd, data.cmds.arg_vec_t, envp);
 		}
-		waitpid(data.pid[i], NULL, 0);
 		cmds = cmds->next;
-		i++;
 	}
+	dup2(data.file2, STDOUT_FILENO);
+	execve(data.cmds.cmd, data.cmds.arg_vec_t, envp);
 	// ft_lstclear1(&cmds, (void *)del);
 	return (0);
 }

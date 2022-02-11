@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/28 12:12:22 by tdeville          #+#    #+#             */
-/*   Updated: 2022/01/29 12:24:42 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/01/31 15:31:55 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_cmds	*ft_lstnew_double(char *cmd, char **arg_vec)
 
 	new = malloc(sizeof(t_cmds));
 	new->arg_vec_t = malloc(sizeof(char *)
-		* double_arrlen(arg_vec));
+		* double_arrlen(arg_vec) + 1);
 	i = 0;
 	if (new)
 	{
@@ -29,6 +29,7 @@ t_cmds	*ft_lstnew_double(char *cmd, char **arg_vec)
 			new->arg_vec_t[i] = ft_strdup(arg_vec[i]);
 			i++;
 		}
+		new->arg_vec_t[i] = NULL;
 		new->next = NULL;
 	}
 	return (new);
