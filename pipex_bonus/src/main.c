@@ -12,6 +12,8 @@
 
 #include "../includes/pipex.h"
 
+void exec(char **envp, char *cmd, char **arg_vec, int fdin);
+
 char	*find_path(char **envp)
 {
 	int		i;
@@ -108,13 +110,11 @@ int	main(int ac, char **av, char **envp)
 
 	////////////////////////
 	int		i;
-	int		j;
 	int		lstsize;
 	char	**args;
-	char	**test;
 	t_cmds	*cmds;
 	t_pipex	data;
-	pid_t	pid;
+	// pid_t	pid;
 
 	i = -1;
 	cmds = NULL;
@@ -134,29 +134,36 @@ int	main(int ac, char **av, char **envp)
 	if (data.file1 < 0 || data.file2 < 0)
 		printf("error file\n");
 	dup2(data.file1, STDIN_FILENO);
-	close(data.file1);
-	while (cmds->next)
+	dup2(data.file2, STDOUT_FILENO);
+	exec(envp, cmds->cmd, cmds->arg_vec_t, data.file1);
+	cmds = cmds->next;
+	while (++i < lstsize - 1)
 	{
-		pipe(data.fd);
-		pid = fork();
-		if (pid > 0)
-		{
-			close(data.fd[1]);
-			dup2(data.fd[0], STDIN_FILENO);
-			close(data.fd[0]);
-			waitpid(pid, NULL, 0);
-		}
-		else
-		{
-			close(data.fd[0]);
-			dup2(data.fd[1], STDOUT_FILENO);
-			close(data.fd[1]);
-			execve(data.cmds.cmd, data.cmds.arg_vec_t, envp);
-		}
+		exec(envp, cmds->cmd, cmds->arg_vec_t, 1);
 		cmds = cmds->next;
 	}
-	dup2(data.file2, STDOUT_FILENO);
-	execve(data.cmds.cmd, data.cmds.arg_vec_t, envp);
+	execve(cmds->cmd, cmds->arg_vec_t, envp);
 	// ft_lstclear1(&cmds, (void *)del);
 	return (0);
+}
+
+void exec(char **envp, char *cmd, char **arg_vec, int fdin)
+{
+	pid_t	pid;
+	int		fd[2];
+
+	pipe(fd);
+	pid = fork();
+	if (!pid)
+	{
+		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
+		execve(cmd, arg_vec, envp);
+	}
+	else
+	{
+		waitpid(pid, NULL, 0);
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+	}
 }

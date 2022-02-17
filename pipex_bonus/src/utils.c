@@ -27,6 +27,7 @@ void	free_all(char **str)
 
 void	error(char *err, int n, t_pipex data)
 {
+	(void)n;
 	if (data.check == 1)
 		write(STDERR_FILENO, "Permission denied\n", 19);
 	if (err)
