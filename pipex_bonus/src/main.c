@@ -135,6 +135,7 @@ int	main(int ac, char **av, char **envp)
 	if (data.file1 < 0 || data.file2 < 0)
 		printf("error file\n");
 	dup2(data.file1, STDIN_FILENO);
+	dup2(data.file2, STDOUT_FILENO);
 	exec(envp, cmds->cmd, cmds->arg_vec_t, test, 0, data, data.file1);
 	cmds = cmds->next;
 	while (++i < lstsize - 1)
@@ -142,9 +143,15 @@ int	main(int ac, char **av, char **envp)
 		exec(envp, cmds->cmd, cmds->arg_vec_t, test, 1, data, 1);
 		cmds = cmds->next;
 	}
-	dup2(data.file2, STDOUT_FILENO);
-	if (execve(cmds->cmd, cmds->arg_vec_t, envp) == -1)
-		printf("execve fail\n");
+	int pidd;
+	pidd = fork();
+	if (!pidd)
+	{
+		if (execve(cmds->cmd, cmds->arg_vec_t, envp) == -1)
+			printf("execve fail\n");
+	}
+	close(data.file1);
+	close(data.file2);
 	// ft_lstclear1(&cmds, (void *)del);
 	return (0);
 }
@@ -172,7 +179,5 @@ void exec(char **envp, char *cmd, char **arg_vec, int fdt, int i, t_pipex data, 
 		dprintf(fdt, "parent\n");
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
-		if (ft_strncmp(arg_vec[0], "sleep", ft_strlen("sleep")) == 0)
-			waitpid(pid, NULL, 0);
 	}
 }
