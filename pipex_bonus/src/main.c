@@ -12,7 +12,7 @@
 
 #include "../includes/pipex.h"
 
-void exec(char **envp, char *cmd, char **arg_vec, int fdin);
+void exec(char **envp, char *cmd, char **arg_vec, int fdt, int i, t_pipex data, int fdin);
 
 char	*find_path(char **envp)
 {
@@ -89,11 +89,11 @@ int	main(int ac, char **av, char **envp)
 	// int		i;
 
 	// i = 0;
-	// // if (ac != 5)
-	// // {
-	// // 	error("Bad arguments\n");
-	// // 	return (1);
-	// // }
+	if (ac < 5)
+	{
+		printf("Bad arguments\n");
+		return (1);
+	}
 	// pipex.fd = malloc(sizeof(int) * (ac - 3) * 2);
 	// pidd = malloc(sizeof(int) * (ac - 3));
 	// if (pipe(pipex.fd) == -1)
@@ -131,39 +131,48 @@ int	main(int ac, char **av, char **envp)
 	i = 0;
 	data.file1 = open(av[1], O_RDONLY);
 	data.file2 = open(av[ac - 1], O_RDWR | O_CREAT, 0644);
+	int test = open("test", O_RDWR | O_CREAT);
 	if (data.file1 < 0 || data.file2 < 0)
 		printf("error file\n");
 	dup2(data.file1, STDIN_FILENO);
-	dup2(data.file2, STDOUT_FILENO);
-	exec(envp, cmds->cmd, cmds->arg_vec_t, data.file1);
+	exec(envp, cmds->cmd, cmds->arg_vec_t, test, 0, data, data.file1);
 	cmds = cmds->next;
 	while (++i < lstsize - 1)
 	{
-		exec(envp, cmds->cmd, cmds->arg_vec_t, 1);
+		exec(envp, cmds->cmd, cmds->arg_vec_t, test, 1, data, 1);
 		cmds = cmds->next;
 	}
-	execve(cmds->cmd, cmds->arg_vec_t, envp);
+	dup2(data.file2, STDOUT_FILENO);
+	if (execve(cmds->cmd, cmds->arg_vec_t, envp) == -1)
+		printf("execve fail\n");
 	// ft_lstclear1(&cmds, (void *)del);
 	return (0);
 }
 
-void exec(char **envp, char *cmd, char **arg_vec, int fdin)
+void exec(char **envp, char *cmd, char **arg_vec, int fdt, int i, t_pipex data, int fdin)
 {
 	pid_t	pid;
 	int		fd[2];
 
+	(void)data;
+	(void)i;
+	(void)fdin;
 	pipe(fd);
 	pid = fork();
 	if (!pid)
 	{
+		dprintf(fdt, "child\n");
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
-		execve(cmd, arg_vec, envp);
+		if (execve(cmd, arg_vec, envp) == -1)
+			dprintf(fdt, "execve error\n");
 	}
 	else
 	{
-		waitpid(pid, NULL, 0);
+		dprintf(fdt, "parent\n");
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
+		if (ft_strncmp(arg_vec[0], "sleep", ft_strlen("sleep")) == 0)
+			waitpid(pid, NULL, 0);
 	}
 }
