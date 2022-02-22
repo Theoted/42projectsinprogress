@@ -22,11 +22,11 @@ maker:
 		${MAKE} -C ${LIBFT}
 
 clean:
-		rm -f ${OBJS}
+		@rm -f ${OBJS}
 		${MAKE} clean -C ${LIBFT}
 
 fclean:	clean
-		rm -f ${NAME}
+		@rm -f ${NAME}
 		${MAKE} fclean -C ${LIBFT}
 
 re:		fclean all

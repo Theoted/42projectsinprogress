@@ -6,7 +6,7 @@
 #    By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/02 13:51:24 by tdeville          #+#    #+#              #
-#    Updated: 2022/01/11 10:27:30 by tdeville         ###   ########lyon.fr    #
+#    Updated: 2022/02/22 11:14:09 by tdeville         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,10 +77,10 @@ bonus:	${OBJS} ${OBJS_B}
 
 
 clean:
-	rm -f ${OBJS} ${OBJS_B}
+	@rm -f ${OBJS} ${OBJS_B}
 
 fclean:	clean
-	rm -f ${NAME}
+	@rm -f ${NAME}
 
 re:		fclean all
 
