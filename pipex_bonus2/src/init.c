@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 15:09:37 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/21 16:07:27 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/22 14:33:31 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,11 @@ int	open_files(t_pipex *data, char **av, int ac)
 
 int	data_init(t_pipex *data, char **av, int ac, char **envp)
 {
-	if (open_files(data, av, ac) == 1)
-		return (1);
 	data->nb_cmd = (ac - 3);
+	if (check_hd(av, ac, data))
+		ft_here_doc(av, ac, data);
+	else if (open_files(data, av, ac) == 1)
+		return (1);
 	data->pid = malloc(sizeof(pid_t) * data->nb_cmd);
 	if (!data->pid)
 	{

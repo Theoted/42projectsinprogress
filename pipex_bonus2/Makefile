@@ -2,7 +2,7 @@ NAME	= pipex
 HEADER	= includes/pipex.h libft/libft.h
 LIBFT	= Libft
 
-SRCS	= src/main.c src/utils.c src/init.c src/ft_access.c
+SRCS	= src/main.c src/utils.c src/init.c src/ft_access.c src/ft_here_doc.c
 
 OBJS	= ${SRCS:.c=.o}
 

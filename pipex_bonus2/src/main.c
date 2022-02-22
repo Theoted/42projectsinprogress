@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/22 10:32:04 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/22 14:59:23 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,18 +74,21 @@ void	exec(t_pipex data, char **envp, int i)
 	{
 		if (i == 0)
 		{
-			dup2(data.infile, STDIN_FILENO);
-			dup2(data.fd[(i * 2) + 1], STDOUT_FILENO);
+			if (dup2(data.infile, STDIN_FILENO) == -1 
+				|| dup2(data.fd[(i * 2) + 1], STDOUT_FILENO) == -1)
+					printf("dup2 error\n");
 		}
 		else if (i == data.nb_cmd - 1)
 		{
-			dup2(data.outfile, STDOUT_FILENO);
-			dup2(data.fd[(i - 1) * 2], STDIN_FILENO);
+			if (dup2(data.outfile, STDOUT_FILENO) == -1
+				|| dup2(data.fd[(i - 1) * 2], STDIN_FILENO) == -1)
+					printf("dup2 error\n");
 		}
 		else
 		{
-			dup2(data.fd[(i - 1) * 2], STDIN_FILENO);
-			dup2(data.fd[(i * 2) + 1], STDOUT_FILENO);
+			if (dup2(data.fd[(i - 1) * 2], STDIN_FILENO) == -1
+				|| dup2(data.fd[(i * 2) + 1], STDOUT_FILENO) == -1)
+					printf("dup2 error\n");
 		}
 		close_all(&data);
 		if (execve(data.cmd, data.arg, envp) == -1)
@@ -106,9 +109,9 @@ int	main(int ac, char **av, char **envp)
 	i = -1;
 	while (++i < data.nb_cmd)
 	{
-		arg = ft_split(av[i + 2], ' ');
+		arg = ft_split(av[i + 3], ' ');
 		data.cmd = find_cmd((arg), data);
-		data.arg = ft_split(av[i + 2], ' ');
+		data.arg = ft_split(av[i + 3], ' ');
 		exec(data, envp, i);
 		free_in_process(arg, &data);
 	}
