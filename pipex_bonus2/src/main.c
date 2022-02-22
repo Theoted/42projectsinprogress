@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/22 14:59:23 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/22 15:49:41 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,21 +74,21 @@ void	exec(t_pipex data, char **envp, int i)
 	{
 		if (i == 0)
 		{
-			if (dup2(data.infile, STDIN_FILENO) == -1 
+			if (dup2(data.infile, STDIN_FILENO) == -1
 				|| dup2(data.fd[(i * 2) + 1], STDOUT_FILENO) == -1)
-					printf("dup2 error\n");
+				exit(1);
 		}
 		else if (i == data.nb_cmd - 1)
 		{
 			if (dup2(data.outfile, STDOUT_FILENO) == -1
 				|| dup2(data.fd[(i - 1) * 2], STDIN_FILENO) == -1)
-					printf("dup2 error\n");
+				exit(1);
 		}
 		else
 		{
 			if (dup2(data.fd[(i - 1) * 2], STDIN_FILENO) == -1
 				|| dup2(data.fd[(i * 2) + 1], STDOUT_FILENO) == -1)
-					printf("dup2 error\n");
+				exit(1);
 		}
 		close_all(&data);
 		if (execve(data.cmd, data.arg, envp) == -1)

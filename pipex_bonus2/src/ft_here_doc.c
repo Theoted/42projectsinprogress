@@ -6,13 +6,13 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:03:49 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/22 14:58:04 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/22 15:49:13 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-int ft_here_doc(char **av, int ac, t_pipex *data)
+int	ft_here_doc(char **av, int ac, t_pipex *data)
 {
 	char	*buffer;
 	int		i;
@@ -36,7 +36,7 @@ int ft_here_doc(char **av, int ac, t_pipex *data)
 	return (0);
 }
 
-int check_hd(char **av, int ac, t_pipex *data)
+int	check_hd(char **av, int ac, t_pipex *data)
 {
 	int	i;
 

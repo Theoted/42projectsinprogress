@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:10:16 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/22 13:57:04 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/22 15:50:34 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,13 @@ char		*find_path(char **envp);
 int			open_pipes(t_pipex *data);
 int			open_files(t_pipex *data, char **av, int ac);
 int			data_init(t_pipex *data, char **av, int ac, char **envp);
-int 		check_hd(char **av, int ac, t_pipex *data);
+int			check_hd(char **av, int ac, t_pipex *data);
 
 // Access
 int			check_access(char **arg_vec, char **arg);
 
 // Here_doc
-int 		ft_here_doc(char **av, int ac, t_pipex *data);
+int			ft_here_doc(char **av, int ac, t_pipex *data);
 
 //utils
 void		free_all(char **str);
