@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/23 10:03:12 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/23 10:57:59 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*find_cmd(char **arg_vec, t_pipex data)
 	char	*tmp;
 
 	i = -1;
-	arg = NULL;
+	arg = 0;
 	if (check_access(arg_vec, &arg) == 2)
 		return (ft_strdup(arg_vec[0]));
 	tmp = arg_vec[0];
