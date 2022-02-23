@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:10:16 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/22 15:50:34 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/23 10:31:51 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <string.h>
-# include "../libft/libft.h"
+# include "../../libft/libft.h"
 
 typedef struct s_pipex
 {
@@ -33,6 +33,7 @@ typedef struct s_pipex
 	char	*cmd;
 	char	**arg;
 	int		nb_cmd;
+	int		hd;
 }			t_pipex;
 
 // main

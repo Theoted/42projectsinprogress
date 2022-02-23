@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 15:09:37 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/22 14:33:31 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/23 09:56:45 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,11 @@ int	open_pipes(t_pipex *data)
 
 int	open_files(t_pipex *data, char **av, int ac)
 {
+	data->hd = 0;
 	data->infile = open(av[1], O_RDONLY, 0644);
 	if (data->infile == -1)
 		return (error("infile not found\n"));
-	data->outfile = open(av[ac - 1], O_RDWR | O_CREAT, 0644);
+	data->outfile = open(av[ac - 1], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (data->outfile == -1)
 	{
 		close(data->infile);

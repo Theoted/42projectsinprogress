@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/22 15:49:41 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/23 10:03:12 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,9 @@ int	main(int ac, char **av, char **envp)
 	i = -1;
 	while (++i < data.nb_cmd)
 	{
-		arg = ft_split(av[i + 3], ' ');
+		arg = ft_split(av[i + 2 + data.hd], ' ');
 		data.cmd = find_cmd((arg), data);
-		data.arg = ft_split(av[i + 3], ' ');
+		data.arg = ft_split(av[i + 2 + data.hd], ' ');
 		exec(data, envp, i);
 		free_in_process(arg, &data);
 	}
