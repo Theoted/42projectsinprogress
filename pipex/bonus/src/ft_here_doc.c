@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:03:49 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/24 10:22:57 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/24 14:00:24 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	ft_here_doc(char **av, int ac, t_pipex *data)
 			close(hd_file);
 			return (1);
 		}
-		if (ft_strncmp(buffer, av[2], ft_strlen(buffer)) == 10)
+		if (!ft_strncmp(buffer, av[2], ft_strlen(av[2])))
 			break ;
 		write(hd_file, buffer, ft_strlen(buffer));
 		free(buffer);
