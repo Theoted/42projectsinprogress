@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:10:16 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/23 10:31:51 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/24 11:31:42 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <string.h>
-# include "../../libft/libft.h"
+# include "../../gnl/get_next_line.h"
 
 typedef struct s_pipex
 {
@@ -45,6 +45,7 @@ int			open_pipes(t_pipex *data);
 int			open_files(t_pipex *data, char **av, int ac);
 int			data_init(t_pipex *data, char **av, int ac, char **envp);
 int			check_hd(char **av, int ac, t_pipex *data);
+int			find_path_env(t_pipex *data, char **envp);
 
 // Access
 int			check_access(char **arg_vec, char **arg);
@@ -60,5 +61,11 @@ void		del(char *str);
 void		last_free(t_pipex *data);
 void		free_in_process(char **arg, t_pipex *data);
 void		arg_error(char *err);
+
+// Functions
+int			ft_strncmp(const char *s1, const char *s2, size_t n);
+size_t		ft_strlen(const char *str);
+char		**ft_split(char const *s, char c);
+char		*ft_strdup(const char *s1);
 
 #endif

@@ -6,11 +6,10 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/07 08:59:38 by tdeville          #+#    #+#             */
-/*   Updated: 2021/11/13 15:57:47 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/24 10:43:24 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include <stdlib.h>
 
 static char	**freeall(char **str, int n)

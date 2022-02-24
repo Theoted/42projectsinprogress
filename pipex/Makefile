@@ -1,45 +1,45 @@
 NAME	= pipex
-HEADER	= mandatory/includes/pipex.h libft/libft.h
+HEADER	= mandatory/includes/pipex.h gnl/get_next_line.h
 
-HEADER_B= bonus/includes/pipex.h libft/libft.h
-
-LIBFT	= libft
+HEADER_B= bonus/includes/pipex.h
 
 SRCS	= 	mandatory/src/execution.c mandatory/src/main.c mandatory/src/utils.c
 
 SRCS_B	=	bonus/src/ft_access.c bonus/src/ft_here_doc.c bonus/src/init.c \
 			bonus/src/main.c bonus/src/utils.c \
 
+SRCS_F	= 	functions/ft_split.c functions/ft_strjoin.c functions/ft_substr.c \
+			functions/ft_strncmp.c functions/ft_strlen.c \
+			functions/ft_strdup.c \
+			gnl/get_next_line.c gnl/get_next_line_utils.c \
+
 OBJS	= ${SRCS:.c=.o}
 OBJS_B	= ${SRCS_B:.c=.o}
+OBJS_F	= ${SRCS_F:.c=.o}
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra
 
-all: maker ${NAME}
+all: ${NAME}
 
-%.o : %.c	${HEADER}
+%.o : %.c	${HEADER} ${HEADER_B}
 		${CC} ${CFLAGS} -c $< -o $@
 
 
-${NAME}:${OBJS} libft/libft.a
-		${CC} ${CFLAGS} ${OBJS} -o $@ libft/libft.a
+${NAME}:${OBJS_F} ${OBJS} ${HEADER} ${HEADER_B}
+		${CC} ${CFLAGS} ${OBJS_F} ${OBJS} -o $@
 
-maker:
-		${MAKE} -C ${LIBFT}
-
-bonus:	maker ${OBJS_B} libft/libft.a
-		${CC} ${CFLAGS} ${OBJS_B} -o pipex libft/libft.a
+bonus:	${OBJS_F} ${OBJS_B} ${HEADER} ${HEADER_B}
+		${CC} ${CFLAGS} ${OBJS_F} ${OBJS_B} -o ${NAME}
 
 clean:
 		@rm -f ${OBJS_B}
+		@rm -f ${OBJS_F}
 		@rm -f ${OBJS}
-		${MAKE} clean -C ${LIBFT}
 
 fclean:	clean
 		@rm -f ${NAME}
-		${MAKE} fclean -C ${LIBFT}
 
 re:		fclean all
 
-.PHONY: all clean fclean re maker bonus
+.PHONY: all clean fclean re bonus

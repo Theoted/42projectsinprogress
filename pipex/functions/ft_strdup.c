@@ -1,25 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_striteri.c                                      :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/07 18:05:59 by tdeville          #+#    #+#             */
-/*   Updated: 2021/11/07 18:52:16 by tdeville         ###   ########lyon.fr   */
+/*   Created: 2021/11/04 17:21:07 by tdeville          #+#    #+#             */
+/*   Updated: 2022/02/24 11:33:49 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	ft_striteri(char *s, void (*f)(unsigned int, char*))
+#include <stdlib.h>
+
+static int	ft_strlen(char const *str)
 {
 	int	i;
 
 	i = 0;
-	if (!s)
-		return ;
-	while (s[i])
+	while (str[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	char	*str;
+	int		i;
+
+	str = malloc(sizeof(char) * ft_strlen(s1) + 1);
+	if (!str)
+		return (0);
+	i = 0;
+	while (s1[i])
 	{
-		f(i, &s[i]);
+		str[i] = s1[i];
 		i++;
 	}
+	str[i] = '\0';
+	return (str);
 }

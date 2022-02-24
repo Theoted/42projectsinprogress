@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:03:49 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/23 10:00:39 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/24 10:22:57 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,18 @@
 int	ft_here_doc(char **av, int ac, t_pipex *data)
 {
 	char	*buffer;
-	int		i;
 	int		hd_file;
 
-	i = 0;
 	hd_file = open(".hdfile", O_RDWR | O_CREAT | O_TRUNC, 0644);
-	data->outfile = open(av[ac - 1], O_CREAT | O_RDWR | O_APPEND, 0644);
 	while (1)
 	{
 		write(STDOUT_FILENO, "pipe heredoc> ", 15);
 		buffer = get_next_line(STDIN_FILENO);
+		if (buffer == '\0')
+		{
+			close(hd_file);
+			return (1);
+		}
 		if (ft_strncmp(buffer, av[2], ft_strlen(buffer)) == 10)
 			break ;
 		write(hd_file, buffer, ft_strlen(buffer));
@@ -33,6 +35,7 @@ int	ft_here_doc(char **av, int ac, t_pipex *data)
 	free(buffer);
 	close(hd_file);
 	data->infile = open(".hdfile", O_RDONLY);
+	data->outfile = open(av[ac - 1], O_CREAT | O_RDWR | O_APPEND, 0644);
 	data->hd = 1;
 	return (0);
 }

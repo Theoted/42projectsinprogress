@@ -6,11 +6,11 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/13 16:08:28 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/22 10:59:15 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/24 11:34:55 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "get_next_line.h"
 
 static void	get_line(char **line, int fd, char *buffer)
 {

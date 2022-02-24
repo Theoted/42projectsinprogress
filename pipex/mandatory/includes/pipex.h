@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:10:16 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/23 10:51:10 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/24 11:01:04 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <string.h>
-# include "../../libft/libft.h"
 
 typedef struct s_pipex
 {
@@ -44,5 +43,12 @@ void	fork_parent(t_pipex pipex, char **av, char **envp);
 //utils
 void	free_all(char **str);
 int		error(char *err);
+
+// Functions
+char	**ft_split(char const *s, char c);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strjoin(char const *s1, char const *s2);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
+size_t	ft_strlen(const char *str);
 
 #endif

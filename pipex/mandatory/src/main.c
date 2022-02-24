@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/23 10:51:16 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/24 09:59:43 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	close_pipes(t_pipex *pipex)
 {
 	close(pipex->fd[0]);
 	close(pipex->fd[1]);
+	close(pipex->outfile);
+	close(pipex->infile);
 }
 
 int	data_init(t_pipex *pipex, char **envp, char **av)
@@ -27,7 +29,14 @@ int	data_init(t_pipex *pipex, char **envp, char **av)
 	if (pipex->outfile == -1)
 		return (error("open error\n"));
 	pipex->path = find_path(envp);
+	if (!pipex->path)
+		return (error("PATH variable not found\n"));
 	pipex->s_path = ft_split(pipex->path, ':');
+	if (!pipex->s_path)
+	{
+		free(pipex->path);
+		return (1);
+	}
 	return (0);
 }
 
