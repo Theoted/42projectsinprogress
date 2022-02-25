@@ -26,7 +26,7 @@ all: ${NAME}
 		${CC} ${CFLAGS} -c $< -o $@
 
 
-${NAME}:${OBJS_F} ${OBJS} ${HEADER} ${HEADER_B}
+${NAME}:${OBJS_F} ${OBJS} ${HEADER} ${HEADER_B} Makefile
 		${CC} ${CFLAGS} ${OBJS_F} ${OBJS} -o $@
 
 bonus:	${OBJS_F} ${OBJS_B} ${HEADER} ${HEADER_B}

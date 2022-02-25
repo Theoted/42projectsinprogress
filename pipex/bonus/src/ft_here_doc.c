@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:03:49 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/24 14:00:24 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/25 13:54:17 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,7 @@ int	ft_here_doc(char **av, int ac, t_pipex *data)
 	{
 		write(STDOUT_FILENO, "pipe heredoc> ", 15);
 		buffer = get_next_line(STDIN_FILENO);
-		if (buffer == '\0')
-		{
-			close(hd_file);
-			return (1);
-		}
-		if (!ft_strncmp(buffer, av[2], ft_strlen(av[2])))
+		if (!ft_strncmp(buffer, av[2], (ft_strlen(buffer) - 1)))
 			break ;
 		write(hd_file, buffer, ft_strlen(buffer));
 		free(buffer);
@@ -35,7 +30,11 @@ int	ft_here_doc(char **av, int ac, t_pipex *data)
 	free(buffer);
 	close(hd_file);
 	data->infile = open(".hdfile", O_RDONLY);
+	if (data->infile == -1)
+		write(STDERR_FILENO, "infile not found or permission denied\n", 39);
 	data->outfile = open(av[ac - 1], O_CREAT | O_RDWR | O_APPEND, 0644);
+	if (data->outfile == -1)
+		write(STDERR_FILENO, "outfile permission denied\n", 27);
 	data->hd = 1;
 	return (0);
 }
