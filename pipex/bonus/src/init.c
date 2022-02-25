@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 15:09:37 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/25 10:40:51 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/25 17:04:42 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ int	data_init(t_pipex *data, char **av, int ac, char **envp)
 	data->nb_cmd = (ac - 3);
 	if (check_hd(av, ac, data))
 	{
+		if (ac < 6)
+			return (error("Bad args\n"));
 		if (ft_here_doc(av, ac, data) == 1)
 			return (1);
 	}
