@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 15:09:37 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/24 11:53:59 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/25 10:40:51 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,10 @@ int	open_files(t_pipex *data, char **av, int ac)
 	data->hd = 0;
 	data->infile = open(av[1], O_RDONLY, 0644);
 	if (data->infile == -1)
-		return (error("infile not found\n"));
+		write(STDERR_FILENO, "infile: Not found or permission denied\n", 39);
 	data->outfile = open(av[ac - 1], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (data->outfile == -1)
-	{
-		close(data->infile);
-		return (error("open error\n"));
-	}
+		write(STDERR_FILENO, "outfile: Permission denied\n", 28);
 	return (0);
 }
 

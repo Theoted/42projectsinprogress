@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:10:16 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/24 11:31:42 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/25 10:34:47 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include <string.h>
 # include "../../gnl/get_next_line.h"
+# include <errno.h>
 
 typedef struct s_pipex
 {
