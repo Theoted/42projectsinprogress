@@ -6,18 +6,19 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 16:47:03 by tdeville          #+#    #+#             */
-/*   Updated: 2021/11/07 19:35:07 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/25 17:00:06 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <stdio.h>
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t	i;
 
-	if (n == 0)
-		return (0);
+	if (n <= 0)
+		return (1);
 	i = 0;
 	while (n--)
 	{
