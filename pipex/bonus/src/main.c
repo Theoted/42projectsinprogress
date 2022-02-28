@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 17:06:30 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 17:54:30 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ char	*find_cmd(char **arg_vec, t_pipex data)
 	while (data.s_path[++i])
 	{
 		arg = ft_strjoin(data.s_path[i], arg_vec[0]);
+		if (!arg)
+			exit(1);
 		if (check_access(arg_vec, &arg) == 0)
 			return (ft_strjoin(data.s_path[i], arg_vec[0]));
 		else if (check_access(arg_vec, &arg) == 1)

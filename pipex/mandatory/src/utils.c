@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/30 10:01:09 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 11:01:13 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 17:55:48 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,5 @@ int	error(char *err)
 {
 	if (err)
 		perror(err);
-	errno = 0;
 	return (1);
 }
