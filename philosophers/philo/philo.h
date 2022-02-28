@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:42:02 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/11 10:46:58 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/24 17:04:29 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ struct s_data
 struct s_philo
 {
 	int				id;
-	int				first_meal;
+	float			time_eat;
 	int				eats;
 	pthread_t		thread;
 	pthread_mutex_t	fork;
-	t_data			data;
+	t_data			*data;
 };
 
 // Utils functions //
