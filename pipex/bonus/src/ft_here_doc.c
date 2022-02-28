@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:03:49 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 17:12:59 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 18:04:33 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	ft_here_doc(char **av, int ac, t_pipex *data)
 	free(buffer);
 	data->outfile = open(av[ac - 1], O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (data->outfile == -1)
-		write(STDERR_FILENO, "outfile permission denied\n", 27);
+		error(av[ac - 1]);
 	return (0);
 }
 

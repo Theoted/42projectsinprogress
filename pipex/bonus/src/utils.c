@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/30 10:01:09 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 11:06:31 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 18:09:32 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ void	last_free(t_pipex *data)
 	free(data->pid);
 }
 
-void	arg_error(char *err)
+int	arg_error(char *err)
 {
 	if (err)
 		write(STDERR_FILENO, err, ft_strlen(err));
-	exit(1);
+	return (1);
 }

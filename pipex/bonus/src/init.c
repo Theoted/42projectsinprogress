@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 15:09:37 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 16:15:57 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 18:09:52 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	open_files(t_pipex *data, char **av, int ac)
 		error(av[1]);
 	data->outfile = open(av[ac - 1], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (data->outfile == -1)
-		write(STDERR_FILENO, "outfile: Permission denied\n", 28);
+		error(av[ac - 1]);
 	data->pid = malloc(sizeof(pid_t) * data->nb_cmd);
 	data->fd = malloc(sizeof(int) * ((data->nb_cmd - 1) * 2));
 	open_pipes(data);
@@ -66,8 +66,8 @@ int	data_init(t_pipex *data, char **av, int ac, char **envp)
 	data->nb_cmd = (ac - 3);
 	if (check_hd(av, ac, data))
 	{
-		if (ac < 6)
-			return (error("Bad args\n"));
+		if (ac != 6)
+			return (arg_error("Bad args number\n"));
 		if (ft_here_doc(av, ac, data) == 1)
 			return (1);
 	}

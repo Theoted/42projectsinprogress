@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 17:54:30 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 18:14:06 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ char	*find_cmd(char **arg_vec, t_pipex data)
 			error("Permission denied\n");
 		free(arg);
 	}
-	error(&arg_vec[0][1]);
+	if (access(&arg_vec[0][1], X_OK) == -1)
+		error(&arg_vec[0][1]);
 	return (0);
 }
 
