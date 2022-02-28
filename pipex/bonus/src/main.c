@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/23 10:57:59 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 17:06:30 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ char	*find_cmd(char **arg_vec, t_pipex data)
 			error("Permission denied\n");
 		free(arg);
 	}
-	error(ft_strjoin(&arg_vec[0][1], " : command not found\n"));
+	error(&arg_vec[0][1]);
 	return (0);
 }
 
@@ -61,9 +61,10 @@ void	close_all(t_pipex *data)
 	int	i;
 
 	i = -1;
-	while (++i < (data->nb_cmd - 1) * 2)
+	while (++i < (data->nb_cmd - 1 + data->hd) * 2)
 		close(data->fd[i]);
-	close(data->infile);
+	if (data->infile)
+		close(data->infile);
 	close(data->outfile);
 }
 
@@ -86,7 +87,7 @@ void	exec(t_pipex data, char **envp, int i)
 		}
 		else
 		{
-			if (dup2(data.fd[(i - 1) * 2], STDIN_FILENO) == -1
+			if (dup2(data.fd[((i - 1)) * 2], STDIN_FILENO) == -1
 				|| dup2(data.fd[(i * 2) + 1], STDOUT_FILENO) == -1)
 				exit(1);
 		}
@@ -109,10 +110,11 @@ int	main(int ac, char **av, char **envp)
 	i = -1;
 	while (++i < data.nb_cmd)
 	{
-		arg = ft_split(av[i + 2 + data.hd], ' ');
-		data.cmd = find_cmd((arg), data);
-		data.arg = ft_split(av[i + 2 + data.hd], ' ');
-		exec(data, envp, i);
+		arg = get_args(&data, av, i, arg);
+		if (data.hd == 0)
+			exec(data, envp, i);
+		else
+			exec_hd(data, envp, i);
 		free_in_process(arg, &data);
 	}
 	close_all(&data);

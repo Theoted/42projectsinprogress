@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 15:09:37 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/25 17:04:42 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 16:15:57 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	open_pipes(t_pipex *data)
 
 	i = -1;
 	j = -1;
-	while (++i < (data->nb_cmd - 1))
+	while (++i < (data->nb_cmd - 1 + data->hd))
 	{	
 		if (pipe(&data->fd[i * 2]) == -1)
 		{
@@ -36,10 +36,13 @@ int	open_files(t_pipex *data, char **av, int ac)
 	data->hd = 0;
 	data->infile = open(av[1], O_RDONLY, 0644);
 	if (data->infile == -1)
-		write(STDERR_FILENO, "infile: Not found or permission denied\n", 39);
+		error(av[1]);
 	data->outfile = open(av[ac - 1], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (data->outfile == -1)
 		write(STDERR_FILENO, "outfile: Permission denied\n", 28);
+	data->pid = malloc(sizeof(pid_t) * data->nb_cmd);
+	data->fd = malloc(sizeof(int) * ((data->nb_cmd - 1) * 2));
+	open_pipes(data);
 	return (0);
 }
 
@@ -70,8 +73,6 @@ int	data_init(t_pipex *data, char **av, int ac, char **envp)
 	}
 	else if (open_files(data, av, ac) == 1)
 		return (1);
-	data->pid = malloc(sizeof(pid_t) * data->nb_cmd);
-	data->fd = malloc(sizeof(int) * ((data->nb_cmd - 1) * 2));
 	if (!data->fd || !data->pid)
 	{
 		if (data->pid)
@@ -82,6 +83,5 @@ int	data_init(t_pipex *data, char **av, int ac, char **envp)
 	}
 	if (find_path_env(data, envp) == 1)
 		return (1);
-	open_pipes(data);
 	return (0);
 }

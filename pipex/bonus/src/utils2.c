@@ -1,30 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/03 16:47:03 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 16:46:16 by tdeville         ###   ########lyon.fr   */
+/*   Created: 2022/02/28 17:00:07 by tdeville          #+#    #+#             */
+/*   Updated: 2022/02/28 17:05:07 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "../includes/pipex.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+char	**get_args(t_pipex *data, char **av, int i, char **arg)
 {
-	size_t	i;
-
-	if (n <= 0)
-		return (1);
-	i = 0;
-	while (n--)
-	{
-		if (s1[i] != s2[i] || s1[i] == 0 || s2[i] == 0)
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-		i++;
-	}
-	return (0);
+	arg = ft_split(av[i + 2 + data->hd], ' ');
+	data->cmd = find_cmd((arg), *data);
+	data->arg = ft_split(av[i + 2 + data->hd], ' ');
+	return (arg);
 }

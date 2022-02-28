@@ -6,7 +6,7 @@ HEADER_B= bonus/includes/pipex.h
 SRCS	= 	mandatory/src/execution.c mandatory/src/main.c mandatory/src/utils.c
 
 SRCS_B	=	bonus/src/ft_access.c bonus/src/ft_here_doc.c bonus/src/init.c \
-			bonus/src/main.c bonus/src/utils.c \
+			bonus/src/main.c bonus/src/utils.c bonus/src/utils2.c \
 
 SRCS_F	= 	functions/ft_split.c functions/ft_strjoin.c functions/ft_substr.c \
 			functions/ft_strncmp.c functions/ft_strlen.c \

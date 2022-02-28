@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:10:16 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/24 11:01:04 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 11:01:01 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <string.h>
+# include <errno.h>
 
 typedef struct s_pipex
 {

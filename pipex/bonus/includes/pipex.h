@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:10:16 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/25 13:38:44 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 17:03:34 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <string.h>
 # include "../../gnl/get_next_line.h"
 # include <errno.h>
-# include <signal.h>
 
 typedef struct s_pipex
 {
@@ -36,17 +35,19 @@ typedef struct s_pipex
 	char	**arg;
 	int		nb_cmd;
 	int		hd;
+	char	*hd_str;
+	int		fd_hd[2];
 }			t_pipex;
 
 // main
 char		*find_cmd(char **arg_vec, t_pipex data);
 char		*find_path(char **envp);
+void		close_all(t_pipex *data);
 
 // Init
 int			open_pipes(t_pipex *data);
 int			open_files(t_pipex *data, char **av, int ac);
 int			data_init(t_pipex *data, char **av, int ac, char **envp);
-int			check_hd(char **av, int ac, t_pipex *data);
 int			find_path_env(t_pipex *data, char **envp);
 
 // Access
@@ -54,6 +55,8 @@ int			check_access(char **arg_vec, char **arg);
 
 // Here_doc
 int			ft_here_doc(char **av, int ac, t_pipex *data);
+void		exec_hd(t_pipex data, char **envp, int i);
+int			check_hd(char **av, int ac, t_pipex *data);
 
 //utils
 void		free_all(char **str);
@@ -63,6 +66,7 @@ void		del(char *str);
 void		last_free(t_pipex *data);
 void		free_in_process(char **arg, t_pipex *data);
 void		arg_error(char *err);
+char		**get_args(t_pipex *data, char **av, int i, char **arg);
 
 // Functions
 int			ft_strncmp(const char *s1, const char *s2, size_t n);

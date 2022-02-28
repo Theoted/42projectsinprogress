@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/30 10:01:09 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/21 18:21:14 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 11:06:31 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ void	free_all(char **str)
 int	error(char *err)
 {
 	if (err)
-		write(STDERR_FILENO, err, ft_strlen(err));
+		perror(err);
+	errno = 0;
 	return (1);
 }
 
