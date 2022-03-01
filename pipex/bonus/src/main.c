@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 18:14:06 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/01 10:42:19 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ char	*find_cmd(char **arg_vec, t_pipex data)
 			error("Permission denied\n");
 		free(arg);
 	}
-	if (access(&arg_vec[0][1], X_OK) == -1)
-		error(&arg_vec[0][1]);
+	arg_error(": command not found\n", &arg_vec[0][1]);
 	return (0);
 }
 
@@ -107,7 +106,7 @@ int	main(int ac, char **av, char **envp)
 	char	**arg;
 
 	if (ac < 5)
-		arg_error("bad arguments\n");
+		arg_error("bad arguments\n", NULL);
 	if (data_init(&data, av, ac, envp) == 1)
 		return (1);
 	i = -1;
@@ -118,7 +117,8 @@ int	main(int ac, char **av, char **envp)
 			exec(data, envp, i);
 		else
 			exec_hd(data, envp, i);
-		free_in_process(arg, &data);
+		if (arg)
+			free_in_process(arg, &data);
 	}
 	close_all(&data);
 	i = -1;

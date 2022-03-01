@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/28 10:55:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 17:55:05 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/01 10:48:40 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,28 +62,27 @@ char	*find_cmd(char **arg_vec, t_pipex pipex)
 {
 	int		i;
 	char	*arg;
+	char	*tmp;
 
 	i = -1;
+	arg = 0;
+	if (check_access(arg_vec, &arg) == 2)
+		return (ft_strdup(arg_vec[0]));
+	tmp = arg_vec[0];
 	arg_vec[0] = ft_strjoin("/", arg_vec[0]);
+	free(tmp);
 	while (pipex.s_path[++i])
 	{
 		arg = ft_strjoin(pipex.s_path[i], arg_vec[0]);
-		if (!access(arg, X_OK))
-		{
-			if (!access(arg, R_OK))
-			{
-				free(arg);
-				return (ft_strjoin(pipex.s_path[i], arg_vec[0]));
-			}
-			else
-			{
-				free(arg);
-				error("Permission denied\n");
-			}
-		}
+		if (!arg)
+			exit(1);
+		if (check_access(arg_vec, &arg) == 0)
+			return (ft_strjoin(pipex.s_path[i], arg_vec[0]));
+		else if (check_access(arg_vec, &arg) == 1)
+			error("Permission denied\n");
 		free(arg);
 	}
-	error(&arg_vec[0][1]);
+	arg_error(": command not found\n", &arg_vec[0][1]);
 	return (0);
 }
 
@@ -94,7 +93,7 @@ int	main(int ac, char **av, char **envp)
 	pid_t	pid1;
 
 	if (ac != 5)
-		return (error("Bad arguments\n"));
+		return (arg_error("Bad arguments\n", NULL));
 	if (pipe(pipex.fd) == -1)
 		return (error("Pipe error\n"));
 	if (data_init(&pipex, envp, av) == 1)

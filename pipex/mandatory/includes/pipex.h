@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:10:16 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 11:01:01 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/01 10:46:25 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ void	fork_parent(t_pipex pipex, char **av, char **envp);
 //utils
 void	free_all(char **str);
 int		error(char *err);
+int		check_access(char **arg_vec, char **arg);
+int		arg_error(char *err, char *cmd);
 
 // Functions
 char	**ft_split(char const *s, char c);
@@ -51,5 +53,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 size_t	ft_strlen(const char *str);
+char	*ft_strdup(const char *s1);
 
 #endif

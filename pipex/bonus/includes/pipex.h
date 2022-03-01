@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/29 11:10:16 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/28 18:09:39 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/01 10:40:54 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int			double_arrlen(char **str);
 void		del(char *str);
 void		last_free(t_pipex *data);
 void		free_in_process(char **arg, t_pipex *data);
-int			arg_error(char *err);
+int			arg_error(char *err, char *cmd);
 char		**get_args(t_pipex *data, char **av, int i, char **arg);
 
 // Functions
