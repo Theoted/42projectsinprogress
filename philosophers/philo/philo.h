@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:42:02 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/24 17:04:29 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/02 13:31:16 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,15 @@ struct s_data
 	int					die;
 	int					sleep;
 	int					eat;
+	struct timeval 		start;
 	pthread_mutex_t		speak;
-	t_philo *philos;
+	t_philo 			*philos;
 };
 
 struct s_philo
 {
 	int				id;
-	float			time_eat;
+	float 			time_eat;
 	int				eats;
 	pthread_t		thread;
 	pthread_mutex_t	fork;
