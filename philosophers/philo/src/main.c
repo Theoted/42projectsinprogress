@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:41:53 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/03 17:02:54 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/04 11:29:46 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ long long int	timems(void)
 	return (time);
 }
 
-int	check_die(t_data *data)
+int	check_die_and_eat(t_data *data)
 {
 	int	i;
 
@@ -30,64 +30,46 @@ int	check_die(t_data *data)
 	while (++i < data->ph_nb)
 	{
 		if (data->eats_done == data->ph_nb)
+		{
+			
 			return (1);
+		}
 		pthread_mutex_lock(&data->speak);
 		if (data->philos[i].running && (timems() - data->philos[i].time_eat) >= data->die)
 		{
+			data->ph_dead = 1;
 			printf("%lld philo %d died\n", (timems() - data->philos[i].time_eat), i);
 			return (1);
 		}
 		pthread_mutex_unlock(&data->speak);
 		if (i == data->ph_nb - 1)
 			i = -1;
-		usleep(1000);
+		usleep(100);
 	}
 	return (0);
 }
 
 int	try_eat(t_philo *philo)
 {
-	long long int	start;
-	long long int	end;
-	
-	while (1)
+	while (1 && philo->data->ph_dead == 0)
 	{
-		pthread_mutex_lock(&philo->data->philos[philo->id].fork);
-		printf("%lld ph %d as taken a fork\n", (timems() - philo->data->start), philo->id);
-		if (philo->id == 0)
-			pthread_mutex_lock(&philo->data->philos[philo->data->ph_nb - 1].fork);
-		else
-			pthread_mutex_lock(&philo->data->philos[philo->id - 1].fork);
-		printf("%lld ph %d is eating\n", (timems() - philo->data->start), philo->id);
-		start = timems();
-		end = timems();
-		while (end - start < (philo->data->eat))
-		{
-			usleep(1000);
-			end = timems();
-		}
-		philo->data->philos[philo->id].time_eat = timems();
-		pthread_mutex_unlock(&philo->data->philos[philo->id].fork);
-		if (philo->id == 0)
-			pthread_mutex_unlock(&philo->data->philos[philo->data->ph_nb - 1].fork);
-		else
-			pthread_mutex_unlock(&philo->data->philos[philo->id - 1].fork);
-		usleep(1000);
-		start = timems();
-		end = timems();
-		printf("%lld ph %d is sleeping\n", (timems() - philo->data->start), philo->id);
-		while (end - start < (philo->data->sleep))
-		{
-			usleep(1000);
-			end = timems();
-		}
-		philo->eats++;
-		if (philo->eats == philo->data->eat_nb)
-		{
-			philo->data->philos[philo->id].running = 0;
-			philo->data->eats_done++;
+		ft_mutex_lock(philo);
+		if (philo->data->ph_dead == 1 || philo->data->check_eat == 1)
 			break ;
-		}
+		printf("%lld ph %d is eating\n", (timems() - philo->data->start), philo->id);
+		ft_usleep(philo->data->eat);
+		philo->data->philos[philo->id].time_eat = timems();
+		ft_mutex_unlock(philo);
+		if (philo->data->ph_dead == 1 || philo->data->check_eat == 1)
+			break ;
+		sleeping(philo);
+		if (philo->data->ph_dead == 1 || philo->data->check_eat == 1)
+			break ;
+		thinking(philo);
+		philo->eats++;
+		if (check_eats(philo))
+			break ;
+		usleep(100);
 	}
 	return (0);
 }
@@ -101,7 +83,7 @@ void	*routine(void *arg)
 		try_eat(philo);
 	else
 	{
-		usleep(1000 * philo->data->eat);
+		ft_usleep(philo->data->eat);
 		try_eat(philo);
 	}
 	return (NULL);
@@ -113,6 +95,7 @@ t_data init_data(char **av)
 	
 	if (av[5])
 		data.eat_nb = ft_atoi(av[5]);
+	data.check_eat = 0;
 	data.ph_nb = ft_atoi(av[1]);
 	data.die = ft_atoi(av[2]);
 	data.eat = ft_atoi(av[3]);
@@ -151,12 +134,12 @@ int	main(int ac, char **av)
 	while (++i < data.ph_nb)
 		if (pthread_create(&ph[i].thread, NULL, &routine, &ph[i]) == -1)
 			printf("Thread creating %d error\n", i);
-	if (check_die(&data) == 1)
-		return (0);
-	i = -1;
-	while (++i < data.ph_nb)
-		if (pthread_join(ph[i].thread, NULL) == -1)
-			printf("Thread join %d error\n", i);
-		
+	if (check_die_and_eat(&data) == 1)
+	{
+		i = -1;
+		while (++i < data.ph_nb)
+			if (pthread_join(ph[i].thread, NULL) == -1)
+				printf("Thread join %d error\n", i);
+	}
 	return (0);
 }
