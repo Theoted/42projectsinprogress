@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:41:53 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/04 11:29:46 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/04 15:30:25 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,47 +29,47 @@ int	check_die_and_eat(t_data *data)
 	i = -1;
 	while (++i < data->ph_nb)
 	{
+		pthread_mutex_lock(&data->speak);
 		if (data->eats_done == data->ph_nb)
 		{
-			
+			pthread_mutex_unlock(&data->speak);
 			return (1);
 		}
-		pthread_mutex_lock(&data->speak);
 		if (data->philos[i].running && (timems() - data->philos[i].time_eat) >= data->die)
 		{
 			data->ph_dead = 1;
-			printf("%lld philo %d died\n", (timems() - data->philos[i].time_eat), i);
+			printf("%lld %d died\n", (timems() - data->philos[i].time_eat), i + 1);
+			pthread_mutex_unlock(&data->speak);
 			return (1);
 		}
-		pthread_mutex_unlock(&data->speak);
 		if (i == data->ph_nb - 1)
 			i = -1;
-		usleep(100);
+		pthread_mutex_unlock(&data->speak);
 	}
 	return (0);
 }
 
 int	try_eat(t_philo *philo)
 {
-	while (1 && philo->data->ph_dead == 0)
+	if (philo->data->ph_nb == 1)
+		return (one_philo_eating(philo));
+	while (1)
 	{
-		ft_mutex_lock(philo);
-		if (philo->data->ph_dead == 1 || philo->data->check_eat == 1)
+		if (ft_mutex_lock(philo) == 1)
 			break ;
-		printf("%lld ph %d is eating\n", (timems() - philo->data->start), philo->id);
+		printf("%lld %d is eating\n", (timems() - philo->data->start), philo->id + 1);
 		ft_usleep(philo->data->eat);
+		pthread_mutex_lock(&philo->data->speak);
 		philo->data->philos[philo->id].time_eat = timems();
+		pthread_mutex_unlock(&philo->data->speak);
 		ft_mutex_unlock(philo);
-		if (philo->data->ph_dead == 1 || philo->data->check_eat == 1)
+		if (sleeping(philo) == 1)
 			break ;
-		sleeping(philo);
-		if (philo->data->ph_dead == 1 || philo->data->check_eat == 1)
+		if (thinking(philo) == 1)
 			break ;
-		thinking(philo);
 		philo->eats++;
 		if (check_eats(philo))
 			break ;
-		usleep(100);
 	}
 	return (0);
 }
@@ -112,8 +112,11 @@ int	main(int ac, char **av)
 	t_philo		*ph;
 	int			i;
 	
-	if (ac < 5)
+	if (ac != 5 && ac != 6)
+	{
 		printf("Arg Error\n");
+		return (0);
+	}
 	data = init_data(av);
 	ph = malloc(sizeof(t_philo) * data.ph_nb);
 	data.philos = malloc(sizeof(t_philo) * data.ph_nb);
@@ -141,5 +144,7 @@ int	main(int ac, char **av)
 			if (pthread_join(ph[i].thread, NULL) == -1)
 				printf("Thread join %d error\n", i);
 	}
+	free(ph);
+	free(data.philos);
 	return (0);
 }
