@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:42:02 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 16:08:01 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/07 16:38:23 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ struct s_data
 	long long int		start;
 	int					ready;
 	pthread_mutex_t		speak;
-	// pthread_mutex_t		speak;
+	pthread_mutex_t		m_gettime;
 	// pthread_mutex_t		speak;
 	// pthread_mutex_t		speak;
 	// pthread_mutex_t		speak;
@@ -60,8 +60,7 @@ int				ft_atoi(const char *str);
 long long int	timems(void);
 void			ft_usleep(int time, t_philo *philo);
 int				check_for_end(t_philo *philo);
-int				print_out(long long int time, int id,
-					char *str, t_philo *philo);
+int				print_out(int id, char *str, t_philo *philo);
 
 // Execution
 int				check_die_and_eat(t_data *data);

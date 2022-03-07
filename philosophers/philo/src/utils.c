@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 10:01:31 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 16:18:34 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/07 16:38:15 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,13 @@ int	one_philo_eating(t_philo *philo)
 	return (0);
 }
 
-int	print_out(long long int time, int id, char *str, t_philo *philo)
+int	print_out(int id, char *str, t_philo *philo)
 {
+	(void)time;
 	if (check_for_end(philo))
 		return (1);
 	pthread_mutex_lock(&philo->data->speak);
-	printf("%lld %d %s\n", time, id, str);
+	printf("%lld %d %s\n", timems() - philo->data->start, id, str);
 	pthread_mutex_unlock(&philo->data->speak);
 	return (0);
 }
