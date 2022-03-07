@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 10:01:31 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 16:38:15 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/07 16:59:45 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ void	ft_usleep(int time, t_philo *philo)
 
 int	check_for_end(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->speak);
+	pthread_mutex_lock(&philo->data->m_check);
 	if (philo->data->ph_dead == 1 || philo->data->check_eat == 1)
 	{
-		pthread_mutex_unlock(&philo->data->speak);
+		pthread_mutex_unlock(&philo->data->m_check);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->data->speak);
+	pthread_mutex_unlock(&philo->data->m_check);
 	return (0);
 }
 
@@ -52,10 +52,12 @@ int	one_philo_eating(t_philo *philo)
 
 int	print_out(int id, char *str, t_philo *philo)
 {
-	(void)time;
-	if (check_for_end(philo))
-		return (1);
 	pthread_mutex_lock(&philo->data->speak);
+	if (check_for_end(philo))
+	{
+		pthread_mutex_unlock(&philo->data->speak);
+		return (1);
+	}
 	printf("%lld %d %s\n", timems() - philo->data->start, id, str);
 	pthread_mutex_unlock(&philo->data->speak);
 	return (0);

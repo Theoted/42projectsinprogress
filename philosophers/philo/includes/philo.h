@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:42:02 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 16:38:23 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/07 16:42:41 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,7 @@ struct s_data
 	int					ready;
 	pthread_mutex_t		speak;
 	pthread_mutex_t		m_gettime;
-	// pthread_mutex_t		speak;
-	// pthread_mutex_t		speak;
-	// pthread_mutex_t		speak;
+	pthread_mutex_t		m_check;
 	t_philo				*philos;
 };
 

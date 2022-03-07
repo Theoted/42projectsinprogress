@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:52:18 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 16:38:09 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/07 16:44:45 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ int	thinking(t_philo *philo)
 
 int	check_eats(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->speak);
+	pthread_mutex_lock(&philo->data->m_check);
 	if (philo->eats == philo->data->eat_nb)
 	{
 		philo->data->philos[philo->id].running = 0;
 		philo->data->eats_done++;
-		pthread_mutex_unlock(&philo->data->speak);
+		pthread_mutex_unlock(&philo->data->m_check);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->data->speak);
+	pthread_mutex_unlock(&philo->data->m_check);
 	return (0);
 }
