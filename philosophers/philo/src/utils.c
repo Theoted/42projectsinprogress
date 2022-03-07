@@ -6,21 +6,23 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 10:01:31 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/04 15:34:48 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/07 16:18:34 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void	ft_usleep(int time)
+void	ft_usleep(int time, t_philo *philo)
 {
-	long long int start;
-	long long int end;
-	
+	long long int	start;
+	long long int	end;
+
 	start = timems();
 	end = timems();
 	while (end - start < time)
 	{
+		if (check_for_end(philo))
+			return ;
 		usleep(100);
 		end = timems();
 	}
@@ -41,8 +43,19 @@ int	check_for_end(t_philo *philo)
 int	one_philo_eating(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->philos[philo->id].fork);
-	printf("%lld %d as taken a fork\n", (timems() - philo->data->start), philo->id + 1);
-	ft_usleep(philo->data->die);
+	printf("%lld %d as taken a fork\n",
+		(timems() - philo->data->start), philo->id + 1);
+	ft_usleep(philo->data->die, philo);
 	pthread_mutex_unlock(&philo->data->philos[philo->id].fork);
+	return (0);
+}
+
+int	print_out(long long int time, int id, char *str, t_philo *philo)
+{
+	if (check_for_end(philo))
+		return (1);
+	pthread_mutex_lock(&philo->data->speak);
+	printf("%lld %d %s\n", time, id, str);
+	pthread_mutex_unlock(&philo->data->speak);
 	return (0);
 }
