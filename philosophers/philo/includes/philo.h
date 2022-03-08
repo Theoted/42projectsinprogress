@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:42:02 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 16:42:41 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/08 13:23:28 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ long long int	timems(void);
 void			ft_usleep(int time, t_philo *philo);
 int				check_for_end(t_philo *philo);
 int				print_out(int id, char *str, t_philo *philo);
+void			write_data_dead(t_data *data);
+int				check_die(t_data *data, int i);
 
 // Execution
 int				check_die_and_eat(t_data *data);

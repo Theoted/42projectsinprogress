@@ -6,14 +6,15 @@
 #    By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/07 13:44:35 by tdeville          #+#    #+#              #
-#    Updated: 2022/03/07 14:51:43 by tdeville         ###   ########lyon.fr    #
+#    Updated: 2022/03/08 11:29:50 by tdeville         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= philo
 HEADER	= includes/philo.h
 
-SRCS	=	src/main.c src/ft_atoi.c src/utils.c src/execution.c src/init.c
+SRCS	=	src/main.c src/ft_atoi.c src/utils.c src/execution.c src/init.c \
+			src/utils2.c
 
 OBJS		= ${SRCS:.c=.o}
 

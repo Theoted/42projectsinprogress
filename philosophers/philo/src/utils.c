@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 10:01:31 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 16:59:45 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/08 12:36:44 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,11 @@ int	print_out(int id, char *str, t_philo *philo)
 	printf("%lld %d %s\n", timems() - philo->data->start, id, str);
 	pthread_mutex_unlock(&philo->data->speak);
 	return (0);
+}
+
+void	write_data_dead(t_data *data)
+{
+	pthread_mutex_lock(&data->m_check);
+	data->ph_dead = 1;
+	pthread_mutex_unlock(&data->m_check);
 }

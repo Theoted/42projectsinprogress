@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 10:42:35 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 16:42:53 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/08 12:26:53 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_data	init_data(char **av)
 	pthread_mutex_init(&data.m_gettime, NULL);
 	pthread_mutex_init(&data.m_check, NULL);
 	data.philos = malloc(sizeof(t_philo) * data.ph_nb);
+	data.start = timems();
 	return (data);
 }
 
