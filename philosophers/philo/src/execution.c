@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/03 13:52:18 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 16:44:45 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/08 13:50:15 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,9 @@ int	check_eats(t_philo *philo)
 	pthread_mutex_lock(&philo->data->m_check);
 	if (philo->eats == philo->data->eat_nb)
 	{
+		pthread_mutex_lock(&philo->data->m_gettime);
 		philo->data->philos[philo->id].running = 0;
+		pthread_mutex_unlock(&philo->data->m_gettime);
 		philo->data->eats_done++;
 		pthread_mutex_unlock(&philo->data->m_check);
 		return (1);
