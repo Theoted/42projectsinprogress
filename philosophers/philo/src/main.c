@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:41:53 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/09 09:39:47 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/09 13:13:55 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,25 +85,24 @@ int	main(int ac, char **av)
 	t_data		data;
 	int			i;
 
-	if (ac != 5 && ac != 6)
-	{
-		printf("Arg Error\n");
-		return (0);
-	}
+	if ((ac != 5 && ac != 6) || (check_args(ac, av)))
+		return (return_error("Arg Error"));
 	data = init_data(av);
+	if (check_data(data))
+		return (free_all(&data, "Arg Error", 0));
 	init_philo(&data);
 	i = -1;
 	while (++i < data.ph_nb)
 		if (pthread_create(&data.philos[i].thread, NULL,
 				&routine, &data.philos[i]) == -1)
-			return (free_all(&data, "Thread creating error"));
+			return (free_all(&data, "Thread creating error", 1));
 	if (check_die_and_eat(&data) == 1)
 	{
 		i = -1;
 		while (++i < data.ph_nb)
 			if (pthread_join(data.philos[i].thread, NULL) == -1)
-				return (free_all(&data, "Thread joining error"));
+				return (free_all(&data, "Thread joining error", 1));
 	}
-	free_all(&data, NULL);
+	free_all(&data, NULL, 1);
 	return (0);
 }

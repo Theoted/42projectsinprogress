@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 16:00:11 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/07 10:25:25 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/09 13:03:41 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static int	check_sign(int sign)
 
 int	ft_atoi(const char *str)
 {
-	int		res;
-	int		neg;
-	int		i;
+	long int	res;
+	int			neg;
+	int			i;
 
 	res = 0;
 	neg = 1;

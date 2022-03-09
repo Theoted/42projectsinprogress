@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:42:02 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/09 09:38:29 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/09 13:13:38 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ int				check_for_end(t_philo *philo);
 int				print_out(int id, char *str, t_philo *philo);
 void			write_data_dead(t_data *data);
 int				check_die(t_data *data, int i);
+int				ft_isdigit(int c);
 
 // Execution
 void			*routine(void *arg);
@@ -80,8 +81,11 @@ int				thinking(t_philo *philo);
 t_data			init_data(char **av);
 void			init_philo(t_data *data);
 int				create_thread(t_data data, void *(routine)(void *arg));
+int				check_args(int ac, char **argv);
+int				check_data(t_data data);
 
 // Free and errors
-int				free_all(t_data *data, char *str);
+int				free_all(t_data *data, char *str, int x);
+int				return_error(char *str);
 
 #endif

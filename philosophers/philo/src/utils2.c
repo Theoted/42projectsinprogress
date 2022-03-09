@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 09:51:37 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/09 09:31:06 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/09 13:14:12 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,41 @@ int	check_die(t_data *data, int i)
 	}
 	pthread_mutex_unlock(&data->m_gettime);
 	return (0);
+}
+
+int	check_args(int ac, char **argv)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (++i < ac)
+	{
+		j = -1;
+		while (argv[i][++j])
+			if (!ft_isdigit(argv[i][j]))
+				return (1);
+	}
+	return (0);
+}
+
+int	check_data(t_data data)
+{
+	if ((data.eat < 60) || (data.die < 60) || (data.sleep < 60))
+		return (1);
+	return (0);
+}
+
+int	ft_isdigit(int c)
+{
+	if (c >= 48 && c <= 57)
+		return (1);
+	else
+		return (0);
+}
+
+int	return_error(char *str)
+{
+	printf("%s\n", str);
+	return (1);
 }
