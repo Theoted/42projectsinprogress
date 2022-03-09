@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:41:53 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/09 13:13:55 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/09 14:13:36 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ int	try_eat(t_philo *philo)
 		philo->eats++;
 		if (check_eats(philo))
 			break ;
-		usleep(100);
 	}
 	return (0);
 }

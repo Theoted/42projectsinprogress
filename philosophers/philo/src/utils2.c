@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 09:51:37 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/09 13:14:12 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/09 14:20:55 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,22 @@
 
 int	check_die(t_data *data, int i)
 {
+	long long int	time;
+
+	pthread_mutex_lock(&data->speak);
+	time = timems();
 	pthread_mutex_lock(&data->m_gettime);
 	if (data->philos[i].running
-		&& (timems() - data->philos[i].time_eat) >= data->die)
+		&& (time - data->philos[i].time_eat) >= data->die)
 	{
 		write_data_dead(data);
-		pthread_mutex_lock(&data->speak);
-		printf("%lld %d died\n", (timems() - data->start), i + 1);
+		printf("%lld %d died\n", (time - data->start), i + 1);
 		pthread_mutex_unlock(&data->speak);
 		pthread_mutex_unlock(&data->m_gettime);
 		return (1);
 	}
 	pthread_mutex_unlock(&data->m_gettime);
+	pthread_mutex_unlock(&data->speak);
 	return (0);
 }
 
