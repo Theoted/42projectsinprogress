@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:42:02 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/08 13:23:28 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/09 09:38:29 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void			write_data_dead(t_data *data);
 int				check_die(t_data *data, int i);
 
 // Execution
+void			*routine(void *arg);
 int				check_die_and_eat(t_data *data);
 int				eats_number(t_philo *philo);
 int				fork_and_eat(t_philo *philo);
@@ -78,5 +79,9 @@ int				thinking(t_philo *philo);
 // Init
 t_data			init_data(char **av);
 void			init_philo(t_data *data);
+int				create_thread(t_data data, void *(routine)(void *arg));
+
+// Free and errors
+int				free_all(t_data *data, char *str);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:41:53 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/08 13:50:58 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/09 09:39:47 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int	check_die_and_eat(t_data *data)
 		pthread_mutex_unlock(&data->m_check);
 		if (i == data->ph_nb - 1)
 			i = -1;
+		usleep(100);
 	}
 	return (0);
 }
@@ -63,6 +64,7 @@ int	try_eat(t_philo *philo)
 		philo->eats++;
 		if (check_eats(philo))
 			break ;
+		usleep(100);
 	}
 	return (0);
 }
@@ -94,14 +96,14 @@ int	main(int ac, char **av)
 	while (++i < data.ph_nb)
 		if (pthread_create(&data.philos[i].thread, NULL,
 				&routine, &data.philos[i]) == -1)
-			printf("Thread creating %d error\n", i);
+			return (free_all(&data, "Thread creating error"));
 	if (check_die_and_eat(&data) == 1)
 	{
 		i = -1;
 		while (++i < data.ph_nb)
 			if (pthread_join(data.philos[i].thread, NULL) == -1)
-				printf("Thread join %d error\n", i);
+				return (free_all(&data, "Thread joining error"));
 	}
-	free(data.philos);
+	free_all(&data, NULL);
 	return (0);
 }
