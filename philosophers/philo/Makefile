@@ -6,7 +6,7 @@
 #    By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/07 13:44:35 by tdeville          #+#    #+#              #
-#    Updated: 2022/03/09 09:28:42 by tdeville         ###   ########lyon.fr    #
+#    Updated: 2022/03/09 09:52:25 by tdeville         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,12 +23,12 @@ CFLAGS	= -Wall -Werror -Wextra
 
 all: ${NAME}
 
-%.o : %.c	${HEADER}
+%.o : %.c	${HEADER} Makefile
 		${CC} ${CFLAGS} -c $< -o $@
 
 
-${NAME}: ${OBJS}
-		${CC} ${CFLAGS} ${OBJS} -o $@ 
+${NAME}:	${OBJS}
+			${CC} ${CFLAGS} ${OBJS} -o $@ 
 
 clean:
 		rm -f ${OBJS}
