@@ -6,7 +6,7 @@
 #    By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/09 10:21:20 by tdeville          #+#    #+#              #
-#    Updated: 2022/03/09 16:29:12 by tdeville         ###   ########lyon.fr    #
+#    Updated: 2022/03/10 15:42:48 by tdeville         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,7 @@ ${NAME}: ${OBJS} Libft/libft.a
 
 maker:
 		${MAKE} -C ${LIBFT}
+		${MAKE} bonus -C ${LIBFT}
 
 clean:
 		rm -f ${OBJS}
