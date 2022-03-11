@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 10:24:25 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/10 17:50:39 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/11 15:21:36 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,43 +19,35 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-typedef struct s_args t_args;
+typedef struct s_commands t_commands;
 typedef struct s_data_p t_data_p;
 typedef struct s_lexer t_lexer;
-typedef struct s_cmds t_cmds;
 
-struct s_args
+struct s_commands
 {
-	char    **env_path;
-	char    *path;
-	char	*stdin_arg;
 	char	**args_vec;
+	char	*cmd_path;
+	char	*here_doc;
+	char	*here_doc_del;
+	int		infile;
+	int		outfile;
+	int		infile_type;
 };
 
 struct s_data_p
 {
-	int		pipes_nb;
-	int		args_create;
-	char	**args;
-};
-
-struct s_cmds
-{
-	char 			*arg;
-	struct s_cmds	*next;
-}; 
-
-struct s_lexer
-{
-	int	squotes;
-	int	dquotes;
-	int	dollar;
-	int	l_pipe;
+	char		*stdin_arg;
+	char    	*path;
+	char    	**env_path;
+	char		**args;
+	int			pipes_nb;
+	int			args_create;
+	t_commands	*commands;
 };
 
 /* ------------------- PARSING ------------------- */
 	// Bin Path
-int		find_env_path(char **envp, t_args *args);
+int		find_env_path(char **envp, t_data_p *data);
 int		ft_access(char *arg);
 int		check_pipe(char *line);
 int		pipe_not_in_quotes(char *line);
@@ -72,11 +64,17 @@ int		ft_isquotes(char c);
 
 	// Lexer
 int		lexer(char *arg, t_data_p *data);
-int		squote_check(char *arg, int i, t_data_p *data);
 int		pipe_check(char *arg, int i);
 int		synthax_checker(char *arg);
-void	create_arg(char *str, int i, t_data_p *data, int bad_pipe);
+int		split_args(char *arg, t_data_p *data);
+int		create_arg(char *str, int i, t_data_p *data, int bad_pipe);
 int		count_pipes(char *str);
 int		pipe_synthax(char *str, t_data_p data);
+
+	// Here_doc
+int		check_heredoc(char *arg, t_data_p *data, int idx);
+int		get_heredoc_del(char *arg, int i, t_data_p *data, int idx);
+int		ft_here_doc(t_data_p *data, int idx);
+int		here_doc_write(t_data_p *data, char *buffer, int idx);
 
 #endif

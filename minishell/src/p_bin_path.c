@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing_arg.c                                      :+:      :+:    :+:   */
+/*   p_bin_path.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 14:28:49 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/09 15:34:29 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/11 10:39:55 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // Cette fonction trouve la variable d'environnement PATH
 // et la split dans env_path (structure t_args)
-int	find_env_path(char **envp, t_args *args)
+int	find_env_path(char **envp, t_data_p *data)
 {
 	int		i;
 	char	*path;
@@ -25,7 +25,7 @@ int	find_env_path(char **envp, t_args *args)
 		if (!ft_strncmp(envp[i], "PATH=", 5))
 		{
 			path = ft_substr(envp[i], 5, ft_strlen(&envp[i][5]));
-			args->env_path = ft_split(path, ':');
+			data->env_path = ft_split(path, ':');
 			free(path);
 			return (0);
 		}

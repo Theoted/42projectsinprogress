@@ -6,7 +6,7 @@
 #    By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/02 13:51:24 by tdeville          #+#    #+#              #
-#    Updated: 2022/01/11 10:27:30 by tdeville         ###   ########lyon.fr    #
+#    Updated: 2022/03/11 13:24:32 by tdeville         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRCS	= ft_strlen.c \
 		ft_toupper.c \
 		ft_atoi.c \
 		ft_strdup.c \
+		ft_strndup.c \
 		ft_calloc.c \
 		ft_substr.c \
 		ft_strjoin.c \
@@ -46,6 +47,8 @@ SRCS	= ft_strlen.c \
 		ft_putstr_fd.c \
 		ft_putendl_fd.c \
 		ft_putnbr_fd.c \
+		get_next_line_utils.c \
+		get_next_line.c \
 
 SRCS_B =	ft_lstnew.c \
 			ft_lstadd_front.c \

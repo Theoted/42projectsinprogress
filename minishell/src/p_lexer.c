@@ -6,11 +6,15 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 12:17:25 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/10 17:55:57 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/11 15:36:42 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+/*
+	Quand ligne vide segfault.
+*/
 
 int	count_pipes(char *str)
 {
@@ -29,7 +33,7 @@ int	count_pipes(char *str)
 	return (count);
 }
 
-void	create_arg(char *str, int i, t_data_p *data, int bad_pipe)
+int	create_arg(char *str, int i, t_data_p *data, int bad_pipe)
 {
 	int		j;
 	char	*arg;
@@ -46,9 +50,17 @@ void	create_arg(char *str, int i, t_data_p *data, int bad_pipe)
 	if (str[j] == '|')
 		j++;
 	arg = ft_substr(str, j, i - j);
+	if (!arg)
+		return (1);
 	data->args[data->args_create] = ft_strtrim(arg, " ");
+	if (!data->args[data->args_create])
+	{
+		free(arg);
+		return (1);
+	}
 	data->args_create++;
 	free(arg);
+	return (0);
 }
 
 int	synthax_checker(char *arg)
@@ -71,30 +83,21 @@ int	synthax_checker(char *arg)
 	return (0);
 }
 
-int	lexer(char *arg, t_data_p *data)
+int	split_args(char *arg, t_data_p *data)
 {
 	int		i;
 	int		bad_pipe;
 
 	i = 0;
 	bad_pipe = 0;
-	data->pipes_nb = count_pipes(arg);
-	data->args_create = 0;
-	data->args = malloc(sizeof(char *) * (data->pipes_nb + 2));
-	if (synthax_checker(arg))
-	{
-		printf("Synthax error\n");
-		return (1);
-	}
 	while (arg[i])
 	{
-		// if (arg[i] == '$')
-		// 	dollar_check();
 		if (arg[i] == '|')
 		{
 			if (!pipe_check(arg, i))
 			{
-				create_arg(arg, i, data, bad_pipe);
+				if (create_arg(arg, i, data, bad_pipe) != 0)
+					return (1);
 				bad_pipe = 0;
 			}
 			else
@@ -102,8 +105,33 @@ int	lexer(char *arg, t_data_p *data)
 		}
 		i++;
 	}
-	create_arg(arg, i, data, bad_pipe);
+	if (create_arg(arg, i, data, bad_pipe) != 0)
+		return (1);
 	data->args[data->args_create] = 0;
+	return (0);
+}
+
+int	lexer(char *arg, t_data_p *data)
+{
+	int	i;
+
+	i = 0;
+	data->pipes_nb = count_pipes(arg);
+	data->args_create = 0;
+	data->args = malloc(sizeof(char *) * (data->pipes_nb + 2));
+	data->commands = malloc(sizeof(t_commands) * (data->pipes_nb + 1));
+	if (synthax_checker(arg)) // Have to add pipe synthax checker
+	{
+		printf("Synthax error\n");
+		return (1);
+	}
+	if (split_args(arg, data) != 0)
+		return (1);
+	while (data->args[i])
+	{
+		check_heredoc(data->args[i], data, i);
+		i++;
+	}
 	return (0);
 }
 

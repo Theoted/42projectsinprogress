@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 10:21:05 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/10 17:38:11 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/11 15:34:21 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,16 @@
 
 int main(int ac, char **av, char **envp)
 {
-	t_args		args;
-	t_data_p	data_p;
+	t_data_p		data_p;
 	
 	(void)ac;
 	(void)av;
-	find_env_path(envp, &args);
+	find_env_path(envp, &data_p);
 	while (1)
 	{
-		args.stdin_arg = readline("\033[0;34mShellDePetiteTaille-0.0.42: \033[0m");
-		lexer(args.stdin_arg, &data_p);
-		printf("%s\n", data_p.args[0]);
-		printf("%s\n", data_p.args[1]);
-		printf("%s\n", data_p.args[2]);
-		printf("%s\n", data_p.args[3]);
+		data_p.stdin_arg = readline("\033[0;34mShellDePetiteTaille-0.0.42: \033[0m");
+		if (data_p.stdin_arg[0])
+			lexer(data_p.stdin_arg, &data_p);
 	}
 	return (0);
 }
