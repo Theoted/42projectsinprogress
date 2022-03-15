@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/02 13:51:22 by tdeville          #+#    #+#             */
-/*   Updated: 2022/02/22 11:05:11 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/15 16:40:14 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ size_t		ft_strlcat(char *dst, const char *src, size_t dstsize);
 char		*ft_strchr(const char *s, int c);
 int			ft_atoi(const char *str);
 char		*ft_strdup(const char *s1);
+char		*ft_strndup(const char *s1, size_t size);
 void		*ft_calloc(size_t count, size_t size);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 char		*ft_substr(char const *s, unsigned int start, size_t len);

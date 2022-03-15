@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 14:28:49 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/11 10:39:55 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/15 11:34:58 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,28 @@ int	find_env_path(char **envp, t_data_p *data)
 		}
 	}
 	return (1);
+}
+
+char	*expend_env_var(char **envp, char *var)
+{
+	int		i;
+	char	*env_var;
+	char	*tmp;
+
+	
+	i = -1;
+	tmp = ft_strjoin(var, "=");
+	while (envp[++i])
+	{
+		if (!ft_strncmp(envp[i], tmp, ft_strlen(tmp)))
+		{
+			env_var = ft_substr(envp[i], ft_strlen(tmp), ft_strlen(envp[i]));
+			free(tmp);
+			return (env_var);
+		}
+	}
+	free(tmp);
+	return (var);
 }
 
 // Cette fonction sert a trouver le path d'un bin et de verifier si

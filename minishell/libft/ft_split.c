@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/07 08:59:38 by tdeville          #+#    #+#             */
-/*   Updated: 2021/11/13 15:57:47 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/15 16:42:11 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	wordlen(char const *s, char c)
 	return (i);
 }
 
-static char	*ft_strndup(char const *s, size_t size)
+static char	*ft_strndup_s(char const *s, size_t size)
 {
 	size_t		i;
 	char		*word;
@@ -87,7 +87,7 @@ char	**ft_split(char const *s, char c)
 		while (*s == c)
 			s++;
 		i = wordlen(s, c);
-		newstring[j] = ft_strndup(s, i);
+		newstring[j] = ft_strndup_s(s, i);
 		if (!newstring[j])
 			return (freeall(newstring, j));
 		s += i;
