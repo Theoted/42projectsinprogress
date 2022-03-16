@@ -6,13 +6,57 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 11:04:51 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/15 18:01:01 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/16 14:32:21 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	format_del(char *del, t_data_p *data, int idx)
+// ----------------------- CHECK HERE DOC AND GET DEL -----------------------
+
+int	check_heredoc(char *arg, t_data_p *data, int idx)
+{
+	int	i;
+
+	i = 0;
+	while (arg[i])
+	{
+		if (arg[i] == '<' && arg[i + 1] == '<')
+		{
+			get_heredoc_del(arg, i + 2, data);
+			ft_here_doc(data, idx);
+		}
+		i++;
+	}
+	return (0);
+}
+
+int	get_heredoc_del(char *arg, int i, t_data_p *data)
+{
+	int		j;
+	int		quote;
+
+	quote = 0;
+	data->hd_data.expend_var = 1;
+	while (arg[i] == ' ' && arg[i])
+		i++;
+	j = i;
+	while (arg[i] != ' ' && arg[i])
+	{
+		if (arg[i] == '\"' || arg[i] == '\'')
+		{
+			data->hd_data.expend_var = 0;
+			quote = 1;
+		}
+		i++;
+	}
+	data->hd_data.here_doc_del = ft_substr(arg, j, i);
+	if (quote != 0)
+		format_del(data->hd_data.here_doc_del, data);
+	return (0);
+}
+
+int	format_del(char *del, t_data_p *data)
 {
 	int		i;
 	int		j;
@@ -38,95 +82,59 @@ int	format_del(char *del, t_data_p *data, int idx)
 			}
 		}
 	}
-	tmp = data->commands[idx].here_doc_del;
-	data->commands[idx].here_doc_del = ft_strdup(new_del);
+	tmp = data->hd_data.here_doc_del;
+	data->hd_data.here_doc_del = ft_strdup(new_del);
 	free(tmp);
 	return (0);
 }
 
-int	check_heredoc(char *arg, t_data_p *data, int idx)
-{
-	int	i;
+// -------------------------- HERE DOC --------------------------
 
-	i = 0;
-	while (arg[i])
+int	ft_here_doc(t_data_p *data, int idx)
+{
+	int		del_len;
+	int		longest;
+	char	*buffer;
+	
+
+	del_len = ft_strlen(data->hd_data.here_doc_del);
+	while (1)
 	{
-		if (arg[i] == '<' && arg[i + 1] == '<')
-		{
-			get_heredoc_del(arg, i + 2, data, idx);
-			ft_here_doc(data, idx);
-		}
-		i++;
+		write(STDOUT_FILENO, "> ", 2);
+		buffer = get_next_line(STDIN_FILENO);
+		longest = del_len;
+		if (ft_strlen(buffer) > (size_t)del_len)
+			longest = (ft_strlen(buffer) - 1);
+		if (!ft_strncmp(buffer
+			, data->hd_data.here_doc_del, longest))
+			break;
+		here_doc_write(data, buffer, idx);
+		free(buffer);
+	}
+	free(buffer);
+	return (0);
+}
+
+int	here_doc_write(t_data_p *data, char *buffer, int idx)
+{
+	char	*tmp;
+
+	if (data->hd_data.expend_var)
+		buffer = get_expend_var(data, buffer);
+	printf("buffer = %s\n", buffer);
+	if (!data->commands[idx].here_doc)
+		data->commands[idx].here_doc = ft_strdup(buffer);
+	else
+	{
+		tmp = data->commands[idx].here_doc;
+		data->commands[idx].here_doc = ft_strjoin
+			(data->commands[idx].here_doc, buffer);
+		free(tmp);
 	}
 	return (0);
 }
 
-int	get_heredoc_del(char *arg, int i, t_data_p *data, int idx)
-{
-	int		j;
-	int		quote;
-
-	quote = 0;
-	data->commands[idx].expend_var = 1;
-	while (arg[i] == ' ' && arg[i])
-		i++;
-	j = i;
-	while (arg[i] != ' ' && arg[i])
-	{
-		if (arg[i] == '\"' || arg[i] == '\'')
-		{
-			data->commands[idx].expend_var = 0;
-			quote = 1;
-		}
-		i++;
-	}
-	data->commands[idx].here_doc_del = ft_substr(arg, j, i);
-	if (quote != 0)
-		format_del(data->commands[idx].here_doc_del, data, idx);
-	return (0);
-}
-
-int	nb_of_env_vars(char *buffer)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (buffer[i])
-	{
-		if (buffer[i] == '$')
-			count++;
-		i++;
-	}
-	return (count);
-}
-
-void	fill_vars_tab(char **var, char *buffer, int *idx, int *k)
-{
-	int	j;
-	int	check;
-
-	j = *idx;
-	check = 0;
-	while (buffer[*idx] != ' ' && buffer[*idx])
-	{
-		if (buffer[*idx] == '\n')
-			break ;
-		(*idx)++;
-		if (buffer[*idx] == '$')
-		{
-			check = 1;
-			break ;
-		}
-	}
-	*var = ft_substr(buffer, j + 1, (*idx - j) - 1);
-	(*k)++;
-	if (check == 1)
-		(*idx)--;
-}
-
-int	get_expend_var(t_data_p *data, char *buffer)
+char	*get_expend_var(t_data_p *data, char *buffer)
 {
 	int		i;
 	int		k;
@@ -153,77 +161,103 @@ int	get_expend_var(t_data_p *data, char *buffer)
 			i++;
 		}
 	}
-	// expend_var_in_buffer(buffer, vars);
-	return (0);
+	return (expend_var_in_buffer(buffer, vars, data));
 }
 
-/*	L'objectif actuel est de reussir a expend les variables d'environnement
-	dans le buffer et donc de modifier le buffer
-
-	Je dois aussi checker si la variable existe ou non car si elle n'existe pas,
-	elle est remplacée par une chaine vide. Cependant si elle n'existe pas mais
-	qu'elle contient des quotes, elle sera affichée tel quel.
- */
-// char	*expend_var_in_buffer(char *buffer, char **expended_vars)
-// {
-// 	int		i;
-// 	int		j;
-// 	int		k;
-// 	char	**split_buffer;
-// 	(void)expended_vars;
-
-// 	i = -1;
-// 	k = 0;
-// 	split_buffer = malloc(sizeof(char *) * (nb_of_env_vars(buffer) + 1));
-// 	while (buffer[++i])
-// 	{
-// 	}
-// 	split_buffer[k] = 0;
-// 	printf("%s\n", split_buffer[0]);
-// 	printf("%s\n", split_buffer[1]);
-// 	printf("%s\n", split_buffer[2]);
-// 	return (0);
-// }
-
-int	here_doc_write(t_data_p *data, char *buffer, int idx)
+void	fill_vars_tab(char **var, char *buffer, int *idx, int *k)
 {
-	char	*tmp;
+	int	j;
+	int	check;
 
-	if (data->commands[idx].expend_var)
-		get_expend_var(data, buffer);
-	if (!data->commands[idx].here_doc)
-		data->commands[idx].here_doc = ft_strdup(buffer);
-	else
+	j = *idx;
+	check = 0;
+	while (buffer[*idx] != ' ' && buffer[*idx])
 	{
-		tmp = data->commands[idx].here_doc;
-		data->commands[idx].here_doc = ft_strjoin
-			(data->commands[idx].here_doc, buffer);
-		free(tmp);
+		if (buffer[*idx] == '\n')
+			break ;
+		(*idx)++;
+		if (buffer[*idx] == '$')
+		{
+			check = 1;
+			break ;
+		}
 	}
-	return (0);
+	*var = ft_substr(buffer, j + 1, (*idx - j) - 1);
+	(*k)++;
+	if (check == 1)
+		(*idx)--;
 }
 
-int	ft_here_doc(t_data_p *data, int idx)
+char	*expend_var_in_buffer(char *buffer, char **expended_vars, t_data_p *data)
 {
-	int		del_len;
-	int		longest;
-	char	*buffer;
-	
+	int		i;
+	int		j;
+	int		k;
 
-	del_len = ft_strlen(data->commands[idx].here_doc_del);
-	while (1)
+	i = -1;
+	k = 0;
+	data->hd_data.new_buffer = 0;
+	data->hd_data.tmp = 0;
+	data->hd_data.tmp1 = 0;
+	data->hd_data.check = 0;
+	while (buffer[++i])
 	{
-		write(STDOUT_FILENO, "> ", 2);
-		buffer = get_next_line(STDIN_FILENO);
-		longest = del_len;
-		if (ft_strlen(buffer) > (size_t)del_len)
-			longest = (ft_strlen(buffer) - 1);
-		if (!ft_strncmp(buffer
-			, data->commands[idx].here_doc_del, longest))
-			break;
-		here_doc_write(data, buffer, idx);
-		free(buffer);
+		j = i;
+		while (buffer[i] != '$' && buffer[i])
+			i++;
+		if (i > 0)
+		{
+			data->hd_data.tmp = ft_substr(buffer, j, (i - j));
+			if (expended_vars[k] && check_var(expended_vars[k]))
+				data->hd_data.tmp1 = ft_strjoin(data->hd_data.tmp, expended_vars[k++]);
+			else if (expended_vars[k] && !check_var(expended_vars[k]))
+			{
+				data->hd_data.tmp1 = ft_strdup(data->hd_data.tmp);
+				data->hd_data.check = 1;
+				k++;
+			}
+			else if (!expended_vars[k])
+				data->hd_data.tmp1 = ft_strdup(data->hd_data.tmp);
+		}
+		else if (i == 0)
+		{
+			if (expended_vars[k] && check_var(expended_vars[k]))
+				data->hd_data.tmp1 = ft_strdup(expended_vars[k++]);
+			else if (expended_vars[k] && !check_var(expended_vars[k]))
+			{
+				data->hd_data.check = 1;
+				k++;
+			}
+		}
+		while (buffer[i])
+		{
+			if (data->hd_data.check == 1 && (buffer[i + 1] == '\'' 
+				|| buffer[i + 1] == '\"'))
+			{
+				data->hd_data.check = 0;
+				break ;
+			}
+			if (buffer[i + 1] == ' ' || buffer[i + 1] == '$')
+				break ;
+			i++;
+		}
+		if (!data->hd_data.new_buffer && data->hd_data.tmp1)
+			data->hd_data.new_buffer = ft_strdup(data->hd_data.tmp1);
+		else if (!data->hd_data.new_buffer && !data->hd_data.tmp1)
+			continue ;
+		else
+		{
+			if (data->hd_data.tmp)
+				free(data->hd_data.tmp);
+			data->hd_data.tmp = data->hd_data.new_buffer;
+			data->hd_data.new_buffer = ft_strjoin(data->hd_data.new_buffer, data->hd_data.tmp1);
+			free(data->hd_data.tmp);
+		}
+		if (data->hd_data.tmp1)
+			free(data->hd_data.tmp1);
 	}
-	free(buffer);
-	return (0);
+	data->hd_data.tmp1 = data->hd_data.new_buffer;
+	data->hd_data.new_buffer = ft_strtrim(data->hd_data.new_buffer, "\n");
+	free(data->hd_data.tmp1);
+	return (data->hd_data.new_buffer);
 }

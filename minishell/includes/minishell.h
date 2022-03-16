@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 10:24:25 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/15 12:01:01 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/16 14:32:26 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,26 @@
 
 typedef struct s_commands t_commands;
 typedef struct s_data_p t_data_p;
-typedef struct s_lexer t_lexer;
+typedef struct s_hd_data t_hd_data;
 
 struct s_commands
 {
 	char	**args_vec;
 	char	*cmd_path;
 	char	*here_doc;
-	char	*here_doc_del;
-	int		expend_var;
 	int		infile;
 	int		outfile;
 	int		infile_type;
+};
+
+struct s_hd_data
+{
+	int		expend_var;
+	int		check;
+	char	*tmp;
+	char	*tmp1;
+	char	*new_buffer;
+	char	*here_doc_del;
 };
 
 struct s_data_p
@@ -45,7 +53,9 @@ struct s_data_p
 	int			pipes_nb;
 	int			args_create;
 	t_commands	*commands;
+	t_hd_data	hd_data;
 };
+
 
 /* ------------------- PARSING ------------------- */
 	// Bin Path
@@ -64,9 +74,15 @@ int		pipe_synthax(char *str, t_data_p data);
 
 	// Here_doc
 int		check_heredoc(char *arg, t_data_p *data, int idx);
-int		get_heredoc_del(char *arg, int i, t_data_p *data, int idx);
+int		get_heredoc_del(char *arg, int i, t_data_p *data);
 int		ft_here_doc(t_data_p *data, int idx);
 int		here_doc_write(t_data_p *data, char *buffer, int idx);
-char	*expend_var_in_buffer(char *buffer, char **expended_vars);
+char	*expend_var_in_buffer(char *buffer, char **expended_vars, t_data_p *data);
+int		format_del(char *del, t_data_p *data);
+void	fill_vars_tab(char **var, char *buffer, int *idx, int *k);
+char	*get_expend_var(t_data_p *data, char *buffer);
+int		check_var(char *var);
+	// Here_doc utils
+int		nb_of_env_vars(char *buffer);
 
 #endif
