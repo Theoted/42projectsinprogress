@@ -6,15 +6,11 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 12:17:25 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/11 15:36:42 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/17 14:09:58 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-/*
-	Quand ligne vide segfault.
-*/
 
 int	count_pipes(char *str)
 {
@@ -49,17 +45,13 @@ int	create_arg(char *str, int i, t_data_p *data, int bad_pipe)
 	}
 	if (str[j] == '|')
 		j++;
-	arg = ft_substr(str, j, i - j);
+	arg = gc_substr(&data->track, str, j, i - j);
 	if (!arg)
 		return (1);
-	data->args[data->args_create] = ft_strtrim(arg, " ");
+	data->args[data->args_create] = gc_strtrim(&data->track, arg, " ");
 	if (!data->args[data->args_create])
-	{
-		free(arg);
 		return (1);
-	}
 	data->args_create++;
-	free(arg);
 	return (0);
 }
 
@@ -118,8 +110,8 @@ int	lexer(char *arg, t_data_p *data)
 	i = 0;
 	data->pipes_nb = count_pipes(arg);
 	data->args_create = 0;
-	data->args = malloc(sizeof(char *) * (data->pipes_nb + 2));
-	data->commands = malloc(sizeof(t_commands) * (data->pipes_nb + 1));
+	data->args = gc_calloc(sizeof(char *), (data->pipes_nb + 2), &data->track);
+	data->commands = gc_calloc(sizeof(t_commands), (data->pipes_nb + 1), &data->track);
 	if (synthax_checker(arg)) // Have to add pipe synthax checker
 	{
 		printf("Synthax error\n");
@@ -130,6 +122,7 @@ int	lexer(char *arg, t_data_p *data)
 	while (data->args[i])
 	{
 		check_heredoc(data->args[i], data, i);
+		printf("heredoc content = %s\n", data->commands[i].here_doc);
 		i++;
 	}
 	return (0);

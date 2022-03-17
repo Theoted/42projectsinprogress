@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 14:28:49 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/15 11:34:58 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/17 14:08:03 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,15 @@ int	find_env_path(char **envp, t_data_p *data)
 	{
 		if (!ft_strncmp(envp[i], "PATH=", 5))
 		{
-			path = ft_substr(envp[i], 5, ft_strlen(&envp[i][5]));
-			data->env_path = ft_split(path, ':');
-			free(path);
+			path = gc_substr(&data->track, envp[i], 5, ft_strlen(&envp[i][5]));
+			data->env_path = gc_split(&data->track, path, ':');
 			return (0);
 		}
 	}
 	return (1);
 }
 
-char	*expend_env_var(char **envp, char *var)
+char	*expend_env_var(t_data_p *data, char **envp, char *var)
 {
 	int		i;
 	char	*env_var;
@@ -41,17 +40,17 @@ char	*expend_env_var(char **envp, char *var)
 
 	
 	i = -1;
-	tmp = ft_strjoin(var, "=");
+	tmp = gc_strjoin(&data->track, var, "=");
 	while (envp[++i])
 	{
 		if (!ft_strncmp(envp[i], tmp, ft_strlen(tmp)))
 		{
-			env_var = ft_substr(envp[i], ft_strlen(tmp), ft_strlen(envp[i]));
-			free(tmp);
+			env_var = gc_substr(&data->track, envp[i], ft_strlen(tmp), ft_strlen(envp[i]));
+			gc_free_malloc(&data->track, (void **)&tmp);
 			return (env_var);
 		}
 	}
-	free(tmp);
+	gc_free_malloc(&data->track, (void **)&tmp);
 	return (var);
 }
 

@@ -6,7 +6,7 @@
 #    By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/09 10:21:20 by tdeville          #+#    #+#              #
-#    Updated: 2022/03/10 15:42:48 by tdeville         ###   ########lyon.fr    #
+#    Updated: 2022/03/17 13:15:32 by tdeville         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,8 @@ include config/pars_srcs.mk
 include config/exec_srcs.mk 
 
 NAME	= minishell
-HEADER	= includes/minishell.h libft/libft.h
-LIBFT	= Libft
+HEADER	= includes/minishell.h libft2/include/libft2.h libft2/include/gc.h
+LIBFT	= libft2
 
 EXECINCLUDES =	-lreadline -I./readline/include -L./readline/lib -lncurses
 
@@ -32,12 +32,11 @@ all: maker ${NAME}
 		${CC} ${CFLAGS} -c $< -o $@
 
 
-${NAME}: ${OBJS} Libft/libft.a
-		${CC} ${CFLAGS} ${OBJS}  ${EXECINCLUDES} -o $@ Libft/libft.a
+${NAME}: ${OBJS} libft2/libft2.a
+		${CC} ${CFLAGS} ${OBJS}  ${EXECINCLUDES} -o $@ libft2/libft2.a
 
 maker:
 		${MAKE} -C ${LIBFT}
-		${MAKE} bonus -C ${LIBFT}
 
 clean:
 		rm -f ${OBJS}

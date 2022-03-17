@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 11:04:51 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/16 14:32:21 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/17 14:16:28 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	get_heredoc_del(char *arg, int i, t_data_p *data)
 		}
 		i++;
 	}
-	data->hd_data.here_doc_del = ft_substr(arg, j, i);
+	data->hd_data.here_doc_del = gc_substr(&data->track, arg, j, (i - j));
 	if (quote != 0)
 		format_del(data->hd_data.here_doc_del, data);
 	return (0);
@@ -62,12 +62,11 @@ int	format_del(char *del, t_data_p *data)
 	int		j;
 	char	quote;
 	char	*new_del;
-	char	*tmp;
 	
 	i = -1;
 	j = 0;
 	quote = 0;
-	new_del = ft_calloc(sizeof(char), (ft_strlen(del) + 1));
+	new_del = gc_calloc(sizeof(char), (ft_strlen(del) + 1), &data->track);
 	while (del[++i])
 	{
 		if ((del[i] == '\'' || del[i] == '\"') && quote == 0)
@@ -82,9 +81,7 @@ int	format_del(char *del, t_data_p *data)
 			}
 		}
 	}
-	tmp = data->hd_data.here_doc_del;
-	data->hd_data.here_doc_del = ft_strdup(new_del);
-	free(tmp);
+	data->hd_data.here_doc_del = gc_strdup(&data->track, new_del);
 	return (0);
 }
 
@@ -101,7 +98,7 @@ int	ft_here_doc(t_data_p *data, int idx)
 	while (1)
 	{
 		write(STDOUT_FILENO, "> ", 2);
-		buffer = get_next_line(STDIN_FILENO);
+		buffer = gc_get_next_line(&data->track, STDIN_FILENO);
 		longest = del_len;
 		if (ft_strlen(buffer) > (size_t)del_len)
 			longest = (ft_strlen(buffer) - 1);
@@ -109,27 +106,23 @@ int	ft_here_doc(t_data_p *data, int idx)
 			, data->hd_data.here_doc_del, longest))
 			break;
 		here_doc_write(data, buffer, idx);
-		free(buffer);
+		gc_free_malloc(&data->track, (void **)&buffer);
 	}
-	free(buffer);
+	gc_free_malloc(&data->track, (void **)&buffer);
+	data->commands[idx].here_doc = trim_last_bsn(data, data->commands[idx].here_doc);
 	return (0);
 }
 
 int	here_doc_write(t_data_p *data, char *buffer, int idx)
 {
-	char	*tmp;
-
 	if (data->hd_data.expend_var)
 		buffer = get_expend_var(data, buffer);
-	printf("buffer = %s\n", buffer);
 	if (!data->commands[idx].here_doc)
-		data->commands[idx].here_doc = ft_strdup(buffer);
+		data->commands[idx].here_doc = gc_strdup(&data->track, buffer);
 	else
 	{
-		tmp = data->commands[idx].here_doc;
-		data->commands[idx].here_doc = ft_strjoin
-			(data->commands[idx].here_doc, buffer);
-		free(tmp);
+		data->commands[idx].here_doc = gc_strjoin
+			(&data->track, data->commands[idx].here_doc, buffer);
 	}
 	return (0);
 }
@@ -138,15 +131,15 @@ char	*get_expend_var(t_data_p *data, char *buffer)
 {
 	int		i;
 	int		k;
-	char	*tmp;
 	char	**vars;
+	char	*tmp;
 
 	i = -1;
 	k = 0;
-	vars = malloc(sizeof(char *) * (nb_of_env_vars(buffer) + 1));
+	vars = gc_calloc(sizeof(char *), (nb_of_env_vars(buffer) + 1), &data->track);
 	while (buffer[++i])
 		if (buffer[i] == '$')
-			fill_vars_tab(&vars[k], buffer, &i, &k);
+			fill_vars_tab(data, &vars[k], buffer, &i, &k);
 	vars[k] = 0;
 	i = 0;
 	if (vars)
@@ -154,17 +147,16 @@ char	*get_expend_var(t_data_p *data, char *buffer)
 		while (vars[i])
 		{
 			tmp = vars[i];
-			vars[i] = expend_env_var(data->env_vars, vars[i]);
+			vars[i] = expend_env_var(data, data->env_vars, vars[i]);
 			if (!ft_strncmp(vars[i], tmp, ft_strlen(vars[i])))
-				vars[i] = ft_strjoin("$", tmp);	
-			free(tmp);
+				vars[i] = gc_strjoin(&data->track, "$", tmp);
 			i++;
 		}
 	}
 	return (expend_var_in_buffer(buffer, vars, data));
 }
 
-void	fill_vars_tab(char **var, char *buffer, int *idx, int *k)
+void	fill_vars_tab(t_data_p *data, char **var, char *buffer, int *idx, int *k)
 {
 	int	j;
 	int	check;
@@ -182,7 +174,7 @@ void	fill_vars_tab(char **var, char *buffer, int *idx, int *k)
 			break ;
 		}
 	}
-	*var = ft_substr(buffer, j + 1, (*idx - j) - 1);
+	*var = gc_substr(&data->track, buffer, j + 1, (*idx - j) - 1);
 	(*k)++;
 	if (check == 1)
 		(*idx)--;
@@ -207,7 +199,7 @@ char	*expend_var_in_buffer(char *buffer, char **expended_vars, t_data_p *data)
 			i++;
 		if (i > 0)
 		{
-			data->hd_data.tmp = ft_substr(buffer, j, (i - j));
+			data->hd_data.tmp = gc_substr(&data->track, buffer, j, (i - j));
 			if (expended_vars[k] && check_var(expended_vars[k]))
 				data->hd_data.tmp1 = ft_strjoin(data->hd_data.tmp, expended_vars[k++]);
 			else if (expended_vars[k] && !check_var(expended_vars[k]))
@@ -217,12 +209,12 @@ char	*expend_var_in_buffer(char *buffer, char **expended_vars, t_data_p *data)
 				k++;
 			}
 			else if (!expended_vars[k])
-				data->hd_data.tmp1 = ft_strdup(data->hd_data.tmp);
+				data->hd_data.tmp1 = gc_strdup(&data->track, data->hd_data.tmp);
 		}
 		else if (i == 0)
 		{
 			if (expended_vars[k] && check_var(expended_vars[k]))
-				data->hd_data.tmp1 = ft_strdup(expended_vars[k++]);
+				data->hd_data.tmp1 = gc_strdup(&data->track, expended_vars[k++]);
 			else if (expended_vars[k] && !check_var(expended_vars[k]))
 			{
 				data->hd_data.check = 1;
@@ -242,22 +234,12 @@ char	*expend_var_in_buffer(char *buffer, char **expended_vars, t_data_p *data)
 			i++;
 		}
 		if (!data->hd_data.new_buffer && data->hd_data.tmp1)
-			data->hd_data.new_buffer = ft_strdup(data->hd_data.tmp1);
+			data->hd_data.new_buffer = gc_strdup(&data->track, data->hd_data.tmp1);
 		else if (!data->hd_data.new_buffer && !data->hd_data.tmp1)
 			continue ;
 		else
-		{
-			if (data->hd_data.tmp)
-				free(data->hd_data.tmp);
-			data->hd_data.tmp = data->hd_data.new_buffer;
-			data->hd_data.new_buffer = ft_strjoin(data->hd_data.new_buffer, data->hd_data.tmp1);
-			free(data->hd_data.tmp);
-		}
-		if (data->hd_data.tmp1)
-			free(data->hd_data.tmp1);
+			data->hd_data.new_buffer = gc_strjoin(&data->track, data->hd_data.new_buffer, data->hd_data.tmp1);
+		data->hd_data.new_buffer = check_bsn_buffer(data, data->hd_data.new_buffer);
 	}
-	data->hd_data.tmp1 = data->hd_data.new_buffer;
-	data->hd_data.new_buffer = ft_strtrim(data->hd_data.new_buffer, "\n");
-	free(data->hd_data.tmp1);
 	return (data->hd_data.new_buffer);
 }

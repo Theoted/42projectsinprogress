@@ -6,14 +6,14 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 10:24:25 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/16 14:32:26 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/17 14:05:08 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "../libft/libft.h"
+# include "../libft2/include/libft.h"
 # include <unistd.h>
 # include <stdio.h>
 # include <readline/readline.h>
@@ -54,6 +54,7 @@ struct s_data_p
 	int			args_create;
 	t_commands	*commands;
 	t_hd_data	hd_data;
+	t_track		*track;
 };
 
 
@@ -61,7 +62,7 @@ struct s_data_p
 	// Bin Path
 int		find_env_path(char **envp, t_data_p *data);
 int		ft_access(char *arg);
-char	*expend_env_var(char **envp, char *var);
+char	*expend_env_var(t_data_p *data, char **envp, char *var);
 
 	// Lexer
 int		lexer(char *arg, t_data_p *data);
@@ -79,10 +80,15 @@ int		ft_here_doc(t_data_p *data, int idx);
 int		here_doc_write(t_data_p *data, char *buffer, int idx);
 char	*expend_var_in_buffer(char *buffer, char **expended_vars, t_data_p *data);
 int		format_del(char *del, t_data_p *data);
-void	fill_vars_tab(char **var, char *buffer, int *idx, int *k);
+void	fill_vars_tab(t_data_p *data, char **var, char *buffer, int *idx, int *k);
 char	*get_expend_var(t_data_p *data, char *buffer);
-int		check_var(char *var);
 	// Here_doc utils
 int		nb_of_env_vars(char *buffer);
+char	*check_bsn_buffer(t_data_p *data, char *new_buffer);
+int		check_var(char *var);
+char	*trim_last_bsn(t_data_p *data, char *here_doc_content);
+
+	// Utils
+void	free_all(char **arg);
 
 #endif
