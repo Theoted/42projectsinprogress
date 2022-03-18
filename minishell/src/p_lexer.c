@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 12:17:25 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/17 14:09:58 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/18 11:15:00 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,6 @@ int	lexer(char *arg, t_data_p *data)
 	while (data->args[i])
 	{
 		check_heredoc(data->args[i], data, i);
-		printf("heredoc content = %s\n", data->commands[i].here_doc);
 		i++;
 	}
 	return (0);

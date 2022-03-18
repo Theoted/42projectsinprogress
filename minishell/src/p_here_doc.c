@@ -6,11 +6,15 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 11:04:51 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/17 14:16:28 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/18 14:42:55 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+/*
+	Voir le formatage du delimiteur quand il a des quote
+*/
 
 // ----------------------- CHECK HERE DOC AND GET DEL -----------------------
 
@@ -23,6 +27,7 @@ int	check_heredoc(char *arg, t_data_p *data, int idx)
 	{
 		if (arg[i] == '<' && arg[i + 1] == '<')
 		{
+			data->commands[idx].infile_type = 1;
 			get_heredoc_del(arg, i + 2, data);
 			ft_here_doc(data, idx);
 		}
@@ -41,9 +46,9 @@ int	get_heredoc_del(char *arg, int i, t_data_p *data)
 	while (arg[i] == ' ' && arg[i])
 		i++;
 	j = i;
-	while (arg[i] != ' ' && arg[i])
+	while (arg[i] != ' ' && arg[i] != '<' && arg[i])
 	{
-		if (arg[i] == '\"' || arg[i] == '\'')
+		if ((arg[i] == '\"' || arg[i] == '\''))
 		{
 			data->hd_data.expend_var = 0;
 			quote = 1;
@@ -53,6 +58,7 @@ int	get_heredoc_del(char *arg, int i, t_data_p *data)
 	data->hd_data.here_doc_del = gc_substr(&data->track, arg, j, (i - j));
 	if (quote != 0)
 		format_del(data->hd_data.here_doc_del, data);
+	printf("%s\n", data->hd_data.here_doc_del);
 	return (0);
 }
 
@@ -71,15 +77,16 @@ int	format_del(char *del, t_data_p *data)
 	{
 		if ((del[i] == '\'' || del[i] == '\"') && quote == 0)
 			quote = del[i++];
-		while (del[i] != quote && del[i] && quote != 0)
+		if (del[i] == quote && quote != 0)
 		{
-			new_del[j++] = del[i++];
-			if (del[i] == quote && quote != 0)
-			{
-				quote = 0;
-				break ;
-			}
+			quote = 0;
+			i++;
 		}
+		if ((del[i] == '\'' || del[i] == '\"') && quote == 0)
+			continue ;
+		else
+			new_del[j] = del[i];
+		j++;
 	}
 	data->hd_data.here_doc_del = gc_strdup(&data->track, new_del);
 	return (0);
@@ -93,7 +100,7 @@ int	ft_here_doc(t_data_p *data, int idx)
 	int		longest;
 	char	*buffer;
 	
-
+	data->commands[idx].here_doc = NULL;
 	del_len = ft_strlen(data->hd_data.here_doc_del);
 	while (1)
 	{
@@ -109,7 +116,8 @@ int	ft_here_doc(t_data_p *data, int idx)
 		gc_free_malloc(&data->track, (void **)&buffer);
 	}
 	gc_free_malloc(&data->track, (void **)&buffer);
-	data->commands[idx].here_doc = trim_last_bsn(data, data->commands[idx].here_doc);
+	if (data->commands[idx].here_doc)
+		data->commands[idx].here_doc = trim_last_bsn(data, data->commands[idx].here_doc);
 	return (0);
 }
 
