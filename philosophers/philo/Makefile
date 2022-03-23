@@ -6,7 +6,7 @@
 #    By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/07 13:44:35 by tdeville          #+#    #+#              #
-#    Updated: 2022/03/09 14:22:19 by tdeville         ###   ########lyon.fr    #
+#    Updated: 2022/03/23 08:40:12 by tdeville         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,11 +24,11 @@ CFLAGS	= -Wall -Werror -Wextra
 all: ${NAME}
 
 %.o : %.c	${HEADER} Makefile
-		${CC} -fsanitize=thread ${CFLAGS} -c $< -o $@
+		${CC} ${CFLAGS} -c $< -o $@
 
 
 ${NAME}:	${OBJS}
-			${CC} -fsanitize=thread ${CFLAGS} ${OBJS} -o $@ 
+			${CC} ${CFLAGS} ${OBJS} -o $@ 
 
 clean:
 		rm -f ${OBJS}

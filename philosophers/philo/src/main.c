@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 13:41:53 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/14 15:03:44 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/23 08:44:32 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ void	*routine(void *arg)
 	t_philo			*philo;
 
 	philo = arg;
+	while (philo->data->ready == 0)
+		;
 	if (philo->id % 2 != 0)
 		ft_usleep((philo->data->eat / 2), philo);
 	try_eat(philo);
@@ -95,6 +97,7 @@ int	main(int ac, char **av)
 		if (pthread_create(&data.philos[i].thread, NULL,
 				&routine, &data.philos[i]) == -1)
 			return (free_all(&data, "Thread creating error", 1));
+	data.ready = 1;
 	if (check_die_and_eat(&data) == 1)
 	{
 		i = -1;

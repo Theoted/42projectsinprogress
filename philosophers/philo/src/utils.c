@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 10:01:31 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/14 15:05:31 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/23 08:32:49 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	ft_usleep(int time, t_philo *philo)
 	long long int	end;
 
 	start = timems();
-	usleep((time * 0.95) * 1000);
 	end = timems();
 	while (end - start < time)
 	{
