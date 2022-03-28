@@ -6,7 +6,7 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 10:24:25 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/18 14:40:50 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/22 10:28:47 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ struct s_data_p
 	t_track		*track;
 };
 
-
 /* ------------------- PARSING ------------------- */
 	// Bin Path
 int		find_env_path(char **envp, t_data_p *data);
@@ -88,7 +87,15 @@ char	*check_bsn_buffer(t_data_p *data, char *new_buffer);
 int		check_var(char *var);
 char	*trim_last_bsn(t_data_p *data, char *here_doc_content);
 int		check_del(char *del);
+	// Clear here_doc
+char	*clear_here_doc(t_data_p *data, char *arg);
+
+
 	// Utils
-void	free_all(char **arg);
+int 	state_checker(char *str, int start, int len);
+
+	// Expend variables
+int		check_arg_vars(char *arg, t_data_p *data);
+char	**get_exp_vars_arg(char *arg, t_data_p *data);
 
 #endif

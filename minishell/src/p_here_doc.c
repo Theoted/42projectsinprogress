@@ -6,15 +6,11 @@
 /*   By: tdeville <tdeville@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 11:04:51 by tdeville          #+#    #+#             */
-/*   Updated: 2022/03/18 14:42:55 by tdeville         ###   ########lyon.fr   */
+/*   Updated: 2022/03/23 08:47:45 by tdeville         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-/*
-	Voir le formatage du delimiteur quand il a des quote
-*/
 
 // ----------------------- CHECK HERE DOC AND GET DEL -----------------------
 
@@ -30,6 +26,7 @@ int	check_heredoc(char *arg, t_data_p *data, int idx)
 			data->commands[idx].infile_type = 1;
 			get_heredoc_del(arg, i + 2, data);
 			ft_here_doc(data, idx);
+			clear_here_doc(data, arg);
 		}
 		i++;
 	}
@@ -58,7 +55,6 @@ int	get_heredoc_del(char *arg, int i, t_data_p *data)
 	data->hd_data.here_doc_del = gc_substr(&data->track, arg, j, (i - j));
 	if (quote != 0)
 		format_del(data->hd_data.here_doc_del, data);
-	printf("%s\n", data->hd_data.here_doc_del);
 	return (0);
 }
 
@@ -173,7 +169,7 @@ void	fill_vars_tab(t_data_p *data, char **var, char *buffer, int *idx, int *k)
 	check = 0;
 	while (buffer[*idx] != ' ' && buffer[*idx])
 	{
-		if (buffer[*idx] == '\n')
+		if (buffer[*idx] == '\n' || buffer[*idx] == '\'' || buffer[*idx] == '\"')
 			break ;
 		(*idx)++;
 		if (buffer[*idx] == '$')
@@ -209,10 +205,10 @@ char	*expend_var_in_buffer(char *buffer, char **expended_vars, t_data_p *data)
 		{
 			data->hd_data.tmp = gc_substr(&data->track, buffer, j, (i - j));
 			if (expended_vars[k] && check_var(expended_vars[k]))
-				data->hd_data.tmp1 = ft_strjoin(data->hd_data.tmp, expended_vars[k++]);
+				data->hd_data.tmp1 = gc_strjoin(&data->track, data->hd_data.tmp, expended_vars[k++]);
 			else if (expended_vars[k] && !check_var(expended_vars[k]))
 			{
-				data->hd_data.tmp1 = ft_strdup(data->hd_data.tmp);
+				data->hd_data.tmp1 = gc_strdup(&data->track, data->hd_data.tmp);
 				data->hd_data.check = 1;
 				k++;
 			}
@@ -237,7 +233,8 @@ char	*expend_var_in_buffer(char *buffer, char **expended_vars, t_data_p *data)
 				data->hd_data.check = 0;
 				break ;
 			}
-			if (buffer[i + 1] == ' ' || buffer[i + 1] == '$')
+			if (buffer[i + 1] == ' ' || buffer[i + 1] == '$'
+				|| buffer[i + 1] == '\'' || buffer[i + 1] == '\"')
 				break ;
 			i++;
 		}
@@ -247,7 +244,7 @@ char	*expend_var_in_buffer(char *buffer, char **expended_vars, t_data_p *data)
 			continue ;
 		else
 			data->hd_data.new_buffer = gc_strjoin(&data->track, data->hd_data.new_buffer, data->hd_data.tmp1);
-		data->hd_data.new_buffer = check_bsn_buffer(data, data->hd_data.new_buffer);
 	}
+	data->hd_data.new_buffer = check_bsn_buffer(data, data->hd_data.new_buffer);
 	return (data->hd_data.new_buffer);
 }
